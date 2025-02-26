@@ -9,6 +9,8 @@ import {
   _postTitles,
   _description,
   _productNames,
+  _businessNames,
+  _businessLocations,
 } from './_mock';
 
 // ----------------------------------------------------------------------
@@ -24,23 +26,23 @@ export const _myAccount = {
 export const _users = [...Array(24)].map((_, index) => ({
   id: _id(index),
   name: _fullName(index),
-  company: _company(index),
-  isVerified: _boolean(index),
+  subscriptionType: _company(index),
+  subscriptionStatus: _boolean(index),
   avatarUrl: `/assets/images/avatar/avatar-${index + 1}.webp`,
   status: index % 4 ? 'active' : 'banned',
-  role:
-    [
-      'Leader',
-      'Hr Manager',
-      'UI Designer',
-      'UX Designer',
-      'UI/UX Designer',
-      'Project Manager',
-      'Backend Developer',
-      'Full Stack Designer',
-      'Front End Developer',
-      'Full Stack Developer',
-    ][index] || 'UI Designer',
+  isUserOrBusiness: true,
+}));
+
+// ----------------------------------------------------------------------
+
+export const _businesses = [...Array(24)].map((_, index) => ({
+  id: _id(index),
+  name: _businessNames(index),
+  location: _businessLocations(index),
+  isOperational: _boolean(index),
+  avatarUrl: `/assets/images/avatar/avatar-${index + 1}.webp`,
+  status: index % 4 ? 'active' : 'banned',
+  isUserOrBusiness: false,
 }));
 
 // ----------------------------------------------------------------------

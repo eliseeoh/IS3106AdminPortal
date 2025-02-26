@@ -63,7 +63,63 @@ export const _price = (index: number) =>
     25.93, 70.39, 23.11, 67.23, 14.31, 31.5, 26.72, 44.8, 37.87, 75.53,
   ][index];
 
+export const _businessLocations = (index: number) =>
+  [
+    "Marina Bay Sands",
+    "Orchard Road",
+    "Sentosa Island",
+    "Clarke Quay",
+    "Chinatown",
+    "Little India",
+    "Gardens by the Bay",
+    "Bugis Street",
+    "Haji Lane",
+    "East Coast Park",
+    "Holland Village",
+    "Botanic Gardens",
+    "Jurong Bird Park",
+    "River Safari",
+    "Universal Studios Singapore",
+    "Esplanade - Theatres on the Bay",
+    "Singapore Flyer",
+    "Fort Canning Park",
+    "Pulau Ubin",
+    "Southern Ridges",
+    "Kampong Glam",
+    "Raffles Hotel",
+    "Suntec City",
+    "Mount Faber"
+  ][index];
+
 export const _company = (index: number) =>
+  [
+    "Basic Tier Plan",
+    "Middle Tier Plan",
+    "Pro Tier Plan",
+    "Basic Tier Plan",
+    "Middle Tier Plan",
+    "Pro Tier Plan",
+    "Basic Tier Plan",
+    "Middle Tier Plan",
+    "Pro Tier Plan",
+    "Basic Tier Plan",
+    "Middle Tier Plan",
+    "Pro Tier Plan",
+    "Basic Tier Plan",
+    "Middle Tier Plan",
+    "Pro Tier Plan",
+    "Basic Tier Plan",
+    "Middle Tier Plan",
+    "Pro Tier Plan",
+    "Basic Tier Plan",
+    "Middle Tier Plan",
+    "Pro Tier Plan",
+    "Basic Tier Plan",
+    "Middle Tier Plan",
+    "Pro Tier Plan",
+  ][index];
+
+export const _businessNames = (index: number) =>
   [
     'Medhurst, Moore and Franey',
     'Hahn, Homenick and Lind',

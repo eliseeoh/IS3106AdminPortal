@@ -123,10 +123,8 @@ export function NavContent({ data, slots, workspaces, sx }: NavContentProps) {
 
       {slots?.topArea}
 
-      <WorkspacesPopover data={workspaces} sx={{ my: 2 }} />
-
       <Scrollbar fillContent>
-        <Box component="nav" display="flex" flex="1 1 auto" flexDirection="column" sx={sx}>
+        <Box component="nav" display="flex" flex="1 1 auto" flexDirection="column" sx={sx} paddingTop={5}>
           <Box component="ul" gap={0.5} display="flex" flexDirection="column">
             {data.map((item) => {
               const isActived = item.path === pathname;
@@ -164,8 +162,6 @@ export function NavContent({ data, slots, workspaces, sx }: NavContentProps) {
                     <Box component="span" flexGrow={1}>
                       {item.title}
                     </Box>
-
-                    {item.info && item.info}
                   </ListItemButton>
                 </ListItem>
               );
@@ -175,8 +171,6 @@ export function NavContent({ data, slots, workspaces, sx }: NavContentProps) {
       </Scrollbar>
 
       {slots?.bottomArea}
-
-      <NavUpgrade />
     </>
   );
 }

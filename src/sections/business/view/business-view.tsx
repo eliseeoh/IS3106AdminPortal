@@ -9,31 +9,49 @@ import Typography from '@mui/material/Typography';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 
-import { _users } from 'src/_mock';
+import { _businesses, _users } from 'src/_mock';
 import { DashboardContent } from 'src/layouts/dashboard';
 
 import { Iconify } from 'src/components/iconify';
 import { Scrollbar } from 'src/components/scrollbar';
 
-import { TableNoData } from '../table-no-data';
-import { UserTableRow } from '../user-table-row';
-import { UserTableHead } from '../user-table-head';
-import { TableEmptyRows } from '../table-empty-rows';
-import { UserTableToolbar } from '../user-table-toolbar';
-import { emptyRows, applyFilter, getComparator } from '../utils';
+import { TableNoData } from '../../user/table-no-data';
+import { UserTableRow } from '../../user/user-table-row';
+import { UserTableHead } from '../../user/user-table-head';
+import { TableEmptyRows } from '../../user/table-empty-rows';
+import { UserTableToolbar } from '../../user/user-table-toolbar';
+import { emptyRows, applyFilter, getComparator } from '../../user/utils';
 
-import type { UserProps } from '../user-table-row';
+import type { UserProps } from '../../user/user-table-row';
 
 // ----------------------------------------------------------------------
+// @ts-ignore
+function renameKeys(input): UserProps[] {
+  // @ts-ignore
+  const renamedArr = input.map((item) => {
+    const renamed = {
+      id: item.id,
+      name: item.name,
+      subscriptionType: item.location,
+      subscriptionStatus: item.isOperational,
+      status: item.status,
+      avatarUrl: item.avatarUrl,
+      isUserOrBusiness: item.isUserOrBusiness,
+    };
+    return renamed;
+  });
+  return renamedArr;
+}
 
-export function UserView() {
+export function BusinessView() {
   const table = useTable();
 
   const [filterName, setFilterName] = useState('');
 
   // TO-DO: fetch data from API
+  const _business = renameKeys(_businesses);
   const dataFiltered: UserProps[] = applyFilter({
-    inputData: _users,
+    inputData: _business,
     comparator: getComparator(table.order, table.orderBy),
     filterName,
   });
@@ -44,14 +62,14 @@ export function UserView() {
     <DashboardContent>
       <Box display="flex" alignItems="center" mb={5}>
         <Typography variant="h4" flexGrow={1}>
-          Users
+          Businesses
         </Typography>
         <Button
           variant="contained"
           color="inherit"
           startIcon={<Iconify icon="mingcute:add-line" />}
         >
-          New user
+          New Business
         </Button>
       </Box>
 
@@ -82,8 +100,8 @@ export function UserView() {
                 }
                 headLabel={[
                   { id: 'name', label: 'Name' },
-                  { id: 'subscriptionType', label: 'Subscription Type' },
-                  { id: 'subscriptionStatus', label: 'Subscription Status', align: 'center' },
+                  { id: 'location', label: 'Location' },
+                  { id: 'inOperation', label: 'In Operation', align: 'center' },
                   { id: 'status', label: 'Status' },
                   { id: '' },
                 ]}

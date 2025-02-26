@@ -13,16 +13,18 @@ import MenuItem, { menuItemClasses } from '@mui/material/MenuItem';
 import { Label } from 'src/components/label';
 import { Iconify } from 'src/components/iconify';
 
+import { useRouter, usePathname } from 'src/routes/hooks';
+
 // ----------------------------------------------------------------------
 
 export type UserProps = {
   id: string;
   name: string;
-  role: string;
   status: string;
-  company: string;
+  subscriptionType: string;
   avatarUrl: string;
-  isVerified: boolean;
+  subscriptionStatus: boolean;
+  isUserOrBusiness: boolean;
 };
 
 type UserTableRowProps = {
@@ -32,6 +34,9 @@ type UserTableRowProps = {
 };
 
 export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) {
+
+  const router = useRouter();
+
   const [openPopover, setOpenPopover] = useState<HTMLButtonElement | null>(null);
 
   const handleOpenPopover = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
@@ -41,6 +46,14 @@ export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) 
   const handleClosePopover = useCallback(() => {
     setOpenPopover(null);
   }, []);
+
+  const handleClickItem = useCallback(
+    (isUserOrBusiness: boolean, path: string) => {
+      handleClosePopover();
+      router.push(isUserOrBusiness ? `/user/${path}` : `/business/${path}`);
+    },
+    [handleClosePopover, router]
+  );
 
   return (
     <>
@@ -56,12 +69,10 @@ export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) 
           </Box>
         </TableCell>
 
-        <TableCell>{row.company}</TableCell>
-
-        <TableCell>{row.role}</TableCell>
+        <TableCell>{row.subscriptionType}</TableCell>
 
         <TableCell align="center">
-          {row.isVerified ? (
+          {row.subscriptionStatus ? (
             <Iconify width={22} icon="solar:check-circle-bold" sx={{ color: 'success.main' }} />
           ) : (
             '-'
@@ -102,9 +113,9 @@ export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) 
             },
           }}
         >
-          <MenuItem onClick={handleClosePopover}>
+          <MenuItem onClick={() => handleClickItem(row.isUserOrBusiness, row.id)}>
             <Iconify icon="solar:pen-bold" />
-            Edit
+            View
           </MenuItem>
 
           <MenuItem onClick={handleClosePopover} sx={{ color: 'error.main' }}>
