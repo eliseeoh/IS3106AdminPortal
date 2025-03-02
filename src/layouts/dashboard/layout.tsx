@@ -80,7 +80,6 @@ export function DashboardLayout({ sx, children, header }: DashboardLayoutProps) 
             ),
             rightArea: (
               <Box gap={1} display="flex" alignItems="center">
-                <Searchbar />
                 <NotificationsPopover data={_notifications} />
                 <AccountPopover
                   data={[
@@ -91,7 +90,7 @@ export function DashboardLayout({ sx, children, header }: DashboardLayoutProps) 
                     },
                     {
                       label: 'Profile',
-                      href: '#',
+                      href: '/profile',
                       icon: <Iconify width={22} icon="solar:shield-keyhole-bold-duotone" />,
                     },
                   ]}

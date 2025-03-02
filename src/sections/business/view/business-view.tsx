@@ -64,13 +64,6 @@ export function BusinessView() {
         <Typography variant="h4" flexGrow={1}>
           Businesses
         </Typography>
-        <Button
-          variant="contained"
-          color="inherit"
-          startIcon={<Iconify icon="mingcute:add-line" />}
-        >
-          New Business
-        </Button>
       </Box>
 
       <Card>
