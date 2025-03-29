@@ -11,6 +11,9 @@ import {
   _productNames,
   _businessNames,
   _businessLocations,
+  _adminNames,
+  _adminAppointments,
+  _adminRole,
 } from './_mock';
 
 // ----------------------------------------------------------------------
@@ -30,7 +33,7 @@ export const _users = [...Array(24)].map((_, index) => ({
   subscriptionStatus: _boolean(index),
   avatarUrl: `/assets/images/avatar/avatar-${index + 1}.webp`,
   status: index % 4 ? 'active' : 'banned',
-  isUserOrBusiness: true,
+  entityType: "user",
 }));
 
 // ----------------------------------------------------------------------
@@ -42,7 +45,19 @@ export const _businesses = [...Array(24)].map((_, index) => ({
   isOperational: _boolean(index),
   avatarUrl: `/assets/images/avatar/avatar-${index + 1}.webp`,
   status: index % 4 ? 'active' : 'banned',
-  isUserOrBusiness: false,
+  entityType: "business",
+}));
+
+// ----------------------------------------------------------------------
+
+export const _admins = [...Array(24)].map((_, index) => ({
+  id: _id(index),
+  name: _adminNames(index),
+  appointment: _adminAppointments(index),
+  role: _adminRole(index),
+  avatarUrl: `/assets/images/avatar/avatar-${index + 1}.webp`,
+  status: index % 4 ? 'active' : 'banned',
+  entityType: "admin",
 }));
 
 // ----------------------------------------------------------------------

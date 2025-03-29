@@ -70,6 +70,7 @@ export function BusinessView() {
         <UserTableToolbar
           numSelected={table.selected.length}
           filterName={filterName}
+          search="business"
           onFilterName={(event: React.ChangeEvent<HTMLInputElement>) => {
             setFilterName(event.target.value);
             table.onResetPage();

@@ -147,6 +147,94 @@ export const _businessNames = (index: number) =>
     'Streich Group',
   ][index];
 
+export const _adminNames = (index: number) =>
+  [
+    'Li Wei',
+    'Zhang Min',
+    'Chen Hao',
+    'Wang Lei',
+    'Liu Fang',
+    'Huang Rui',
+    'Lin Jian',
+    'Yang Mei',
+    'Zhao Kai',
+    'Wu Bin',
+    'Xu Ning',
+    'Sun Tao',
+    'Ma Ying',
+    'Zhu Qiang',
+    'Guo Hui',
+    'Gao Jie',
+    'He Jun',
+    'Luo Yan',
+    'Deng Fei',
+    'Shen Xia',
+    'Cai Rong',
+    'Feng Zhen',
+    'Xie Wei',
+    'Pan Liang',
+  ][index];
+
+
+export const _adminAppointments = (index: number) =>
+  [
+    'Initial Consultation',
+    'Business Strategy Meeting',
+    'Financial Planning Session',
+    'Legal Advisory Discussion',
+    'Marketing Campaign Review',
+    'Technology Implementation Briefing',
+    'Annual Performance Evaluation',
+    'Project Kickoff Meeting',
+    'Vendor Negotiation',
+    'Product Launch Planning',
+    'Customer Onboarding Session',
+    'HR Compliance Training',
+    'Cybersecurity Risk Assessment',
+    'Quarterly Sales Review',
+    'Operational Efficiency Audit',
+    'Software Development Standup',
+    'Board of Directors Meeting',
+    'Supply Chain Optimization Review',
+    'Employee Training Workshop',
+    'Investment Portfolio Consultation',
+    'Healthcare Checkup',
+    'Tax Preparation Appointment',
+    'IT Infrastructure Assessment',
+    'Contract Renewal Discussion',
+  ][index];
+
+export const _adminRole = (index: number) =>
+  [
+    'Business Analyst',
+    'Full Stack Developer',
+    'Project Manager',
+    'UI/UX Designer',
+    'Data Scientist',
+    'Cybersecurity Specialist',
+    'Cloud Engineer',
+    'Software Architect',
+    'DevOps Engineer',
+    'Product Manager',
+    'Machine Learning Engineer',
+    'Backend Developer',
+    'Frontend Developer',
+    'System Administrator',
+    'Quality Assurance Engineer',
+    'Database Administrator',
+    'IT Support Specialist',
+    'AI Researcher',
+    'Network Engineer',
+    'Business Intelligence Analyst',
+    'Scrum Master',
+    'Blockchain Developer',
+    'Embedded Systems Engineer',
+    'Technical Writer',
+  ][index];
+
+
+
+
 export const _boolean = (index: number) =>
   [
     true,

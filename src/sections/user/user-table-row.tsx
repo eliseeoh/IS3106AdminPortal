@@ -24,7 +24,7 @@ export type UserProps = {
   subscriptionType: string;
   avatarUrl: string;
   subscriptionStatus: boolean;
-  isUserOrBusiness: boolean;
+  entityType: String;
 };
 
 type UserTableRowProps = {
@@ -48,9 +48,15 @@ export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) 
   }, []);
 
   const handleClickItem = useCallback(
-    (isUserOrBusiness: boolean, path: string) => {
+    (entityType: String, path: string) => {
       handleClosePopover();
-      router.push(isUserOrBusiness ? `/user/${path}` : `/business/${path}`);
+      if (entityType === "user") {
+        router.push(`/user/${path}`);
+      } else if (entityType === "business") {
+        router.push(`/business/${path}`);
+      } else {
+        router.push(`/admin/${path}`);
+      }
     },
     [handleClosePopover, router]
   );
@@ -71,13 +77,20 @@ export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) 
 
         <TableCell>{row.subscriptionType}</TableCell>
 
-        <TableCell align="center">
-          {row.subscriptionStatus ? (
-            <Iconify width={22} icon="solar:check-circle-bold" sx={{ color: 'success.main' }} />
-          ) : (
-            '-'
-          )}
-        </TableCell>
+        {row.entityType === "admin" ? (
+          <TableCell>
+            {row.subscriptionStatus}
+          </TableCell>
+        ) : (
+          <TableCell align="center">
+            {row.subscriptionStatus ? (
+              <Iconify width={22} icon="solar:check-circle-bold" sx={{ color: 'success.main' }} />
+            ) : (
+              '-'
+            )}
+          </TableCell>
+        )}
+
 
         <TableCell>
           <Label color={(row.status === 'banned' && 'error') || 'success'}>{row.status}</Label>
@@ -113,7 +126,7 @@ export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) 
             },
           }}
         >
-          <MenuItem onClick={() => handleClickItem(row.isUserOrBusiness, row.id)}>
+          <MenuItem onClick={() => handleClickItem(row.entityType, row.id)}>
             <Iconify icon="solar:pen-bold" />
             View
           </MenuItem>

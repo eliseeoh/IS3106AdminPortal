@@ -9,6 +9,9 @@ import { AuthLayout } from 'src/layouts/auth';
 import { DashboardLayout } from 'src/layouts/dashboard';
 import { UserDetailView } from 'src/sections/userDetail/view';
 import { UserHistoryView } from 'src/sections/userHistory';
+import AdminPage from 'src/pages/admin';
+import AdminDetailPage from 'src/pages/admin-detail';
+import WydProcessesPage from 'src/pages/wyd-processes';
 
 // ----------------------------------------------------------------------
 
@@ -41,24 +44,8 @@ const renderFallback = (
 export function Router() {
   return useRoutes([
     {
-      element: (
-        <DashboardLayout>
-          <Suspense fallback={renderFallback}>
-            <Outlet />
-          </Suspense>
-        </DashboardLayout>
-      ),
-      children: [
-        { element: <HomePage />, index: true },
-        { path: 'user', element: <UserPage /> },
-        { path: 'user/:userId', element: <UserDetailPage /> },
-        { path: 'business', element: <BusinessPage /> },
-        { path: 'business/:businessId', element: <BusinessDetailPage /> },
-        { path: 'products', element: <ProductsPage /> },
-        { path: 'blog', element: <BlogPage /> },
-        { path: 'profile', element: <ProfilePage /> },
-        { path: 'userHistory/:userId', element: <UserHistoryView /> },
-      ],
+      path: '/',
+      element: <Navigate to="/sign-in" replace />,
     },
     {
       path: 'sign-in',
@@ -67,6 +54,29 @@ export function Router() {
           <SignInPage />
         </AuthLayout>
       ),
+    },
+    {
+      element: (
+        <DashboardLayout>
+          <Suspense fallback={renderFallback}>
+            <Outlet />
+          </Suspense>
+        </DashboardLayout>
+      ),
+      children: [
+        { path: 'home', element: <HomePage /> },
+        { path: 'user', element: <UserPage /> },
+        { path: 'user/:userId', element: <UserDetailPage /> },
+        { path: 'business', element: <BusinessPage /> },
+        { path: 'business/:businessId', element: <BusinessDetailPage /> },
+        { path: 'products', element: <ProductsPage /> },
+        { path: 'blog', element: <BlogPage /> },
+        { path: 'profile', element: <ProfilePage /> },
+        { path: 'userHistory/:userId', element: <UserHistoryView /> },
+        { path: 'admin', element: <AdminPage /> },
+        { path: 'admin/:adminId', element: <AdminDetailPage /> },
+        { path: 'processes', element: <WydProcessesPage /> },
+      ],
     },
     {
       path: '404',

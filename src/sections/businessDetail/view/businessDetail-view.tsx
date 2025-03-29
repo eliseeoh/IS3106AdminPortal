@@ -16,7 +16,7 @@ export function BusinessDetailView() {
     isOperational: true,
     status: true,
     avatarUrl: "/assets/images/avatar/avatar-1.webp",
-    isUserOrBusiness: false,
+    entityType: "business",
     businessType: "Arts and Craft",
     businessDescription: "Business description",
     phoneNumber: "123-456-7890",

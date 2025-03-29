@@ -44,7 +44,7 @@ export function UserDetailView() {
     age: 25,
     status: true,
     avatarUrl: "/assets/images/avatar/avatar-1.webp",
-    isUserOrBusiness: false,
+    entityType: "user",
     subscriptionType: "Basic Tier Plan",
     subscriptionStatus: true,
     address: "Parc Valley",

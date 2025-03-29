@@ -63,6 +63,7 @@ export function UserView() {
         <UserTableToolbar
           numSelected={table.selected.length}
           filterName={filterName}
+          search="user"
           onFilterName={(event: React.ChangeEvent<HTMLInputElement>) => {
             setFilterName(event.target.value);
             table.onResetPage();

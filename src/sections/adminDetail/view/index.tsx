@@ -10,7 +10,7 @@ import EditIconSVG from 'src/components/editIconSVG';
 
 // ----------------------------------------------------------------------
 
-export function ProfileView() {
+export function AdminDetailView() {
     const data = {
         id: "1",
         name: "Stacy Lee",
@@ -87,6 +87,7 @@ export function ProfileView() {
                                 </div>
                                 <div style={{ display: 'flex', flexDirection: 'column' }}>
                                     <div style={{ fontSize: 22, fontWeight: '700' }}>{data.name}</div>
+
                                     {isEditPage ? (<div>
                                         <Typography variant='subtitle2'>Appointment</Typography>
                                         <TextField
