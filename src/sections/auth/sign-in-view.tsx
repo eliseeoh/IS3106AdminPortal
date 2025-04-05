@@ -19,10 +19,34 @@ export function SignInView() {
   const router = useRouter();
 
   const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
-  const handleSignIn = useCallback(() => {
-    router.push('/home');
-  }, [router]);
+  const handleSignIn = () => {
+    fetch("http://localhost:3000/api/admins/login", {
+      body: JSON.stringify({
+        email,
+        password,
+      }),
+      headers: { "Content-Type": "application/json" },
+      method: "POST",
+    })
+      .then((res) => {
+        if (res.status === 401) {
+          throw new Error("Unauthorized: Invalid email or password");
+        }
+        return res.json();
+      })
+      .then((json) => {
+        localStorage.setItem("accesstoken", json.accessToken);
+        router.push('/home');
+        console.log("Login successful:", json);
+      })
+      .catch((error) => {
+        console.error(error.message);
+        alert(error.message); // Optionally show an alert to the user
+      });
+  };
 
   const renderForm = (
     <Box display="flex" flexDirection="column" alignItems="flex-end">
@@ -31,6 +55,8 @@ export function SignInView() {
         name="email"
         label="Email address"
         InputLabelProps={{ shrink: true }}
+        onChange={(e) => setEmail(e.target.value)}
+        value={email}
         sx={{ mb: 3 }}
       />
 
@@ -44,6 +70,8 @@ export function SignInView() {
         label="Password"
         InputLabelProps={{ shrink: true }}
         type={showPassword ? 'text' : 'password'}
+        onChange={(e) => setPassword(e.target.value)}
+        value={password}
         InputProps={{
           endAdornment: (
             <InputAdornment position="end">

@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -14,6 +14,7 @@ import { DashboardContent } from 'src/layouts/dashboard';
 
 import { Iconify } from 'src/components/iconify';
 import { Scrollbar } from 'src/components/scrollbar';
+import Api, { address } from 'src/helpers/Api';
 
 import { TableNoData } from '../../user/table-no-data';
 import { UserTableRow } from '../../user/user-table-row';
@@ -30,12 +31,12 @@ function renameKeys(input): UserProps[] {
     // @ts-ignore
     const renamedArr = input.map((item) => {
         const renamed = {
-            id: item.id,
+            id: item._id,
             name: item.name,
             subscriptionType: item.appointment,
             subscriptionStatus: item.role,
             status: item.status,
-            avatarUrl: item.avatarUrl,
+            avatarUrl: `${address}/${item.profilePicture}`,
             entityType: item.entityType,
         };
         return renamed;
@@ -47,9 +48,31 @@ export function AdminView() {
     const table = useTable();
 
     const [filterName, setFilterName] = useState('');
+    const [initialData, setInitialData] = useState([]);
 
     // TO-DO: fetch data from API
-    const _admin = renameKeys(_admins);
+    const _admin = renameKeys(initialData);
+
+    useEffect(() => {
+        fetchAdminsData();
+    }, []);
+
+    async function fetchAdminsData() {
+        await Api.getAllAdmins()
+            .then((response) => {
+                if (response.status === 200) {
+                    return response.json();
+                }
+                return new Error('Failed to fetch admins data');
+            }).then((data) => {
+                console.log(data);
+                setInitialData(data);
+            })
+            .catch((error) => {
+                console.error('Error fetching admins data:', error);
+            });
+    }
+
     const dataFiltered: UserProps[] = applyFilter({
         inputData: _admin,
         comparator: getComparator(table.order, table.orderBy),
@@ -106,9 +129,9 @@ export function AdminView() {
                                         table.page * table.rowsPerPage,
                                         table.page * table.rowsPerPage + table.rowsPerPage
                                     )
-                                    .map((row) => (
+                                    .map((row, index) => (
                                         <UserTableRow
-                                            key={row.id}
+                                            key={index}
                                             row={row}
                                             selected={table.selected.includes(row.id)}
                                             onSelectRow={() => table.onSelectRow(row.id)}

@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Unstable_Grid2';
@@ -7,16 +7,19 @@ import Typography from '@mui/material/Typography';
 import { DashboardContent } from 'src/layouts/dashboard';
 import { Button, Card, TextField } from '@mui/material';
 import EditIconSVG from 'src/components/editIconSVG';
+import { useParams } from 'react-router-dom';
+import Api, { address } from 'src/helpers/Api';
 
 // ----------------------------------------------------------------------
 
 export function AdminDetailView() {
-    const data = {
+    const { adminId } = useParams();
+    const dataPrep = {
         id: "1",
         name: "Stacy Lee",
         age: 25,
         status: true,
-        avatarUrl: "/assets/images/avatar/avatar-1.webp",
+        profilePicture: "/assets/images/avatar/avatar-1.webp",
         address: "Parc Valley",
         phoneNumber: "123-456-7890",
         dob: "01/01/1996",
@@ -27,12 +30,47 @@ export function AdminDetailView() {
         password: "password",
     }
 
+    const [data, setData] = useState(dataPrep);
+    const [updateData, setUpdateData] = useState({});
     const [isEditPage, setEditPage] = useState(false);
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
-    const [showFileInput, setShowFileInput] = useState(false);
+    const [profileImage, setProfileImage] = useState<File | null>(null);
+
+    const fetchProfileData = useCallback(() => {
+        Api.getProfileById(adminId)
+            .then((res) => {
+                if (res.status === 404) throw new Error("Unauthorized");
+                return res.json();
+            })
+            .then((json) => {
+                setData(json);
+                console.log("Profile data fetched successfully:", json);
+            })
+            .catch((error) => {
+                console.error(error.message);
+                alert(error.message);
+            });
+    }, [adminId]);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    useEffect(() => {
+        fetchProfileData();
+    }, [fetchProfileData]);
+
+    const insertUpdateData = (attributeName: string, value: any) => {
+        setUpdateData((prev) => ({ ...prev, [attributeName]: value }));
+    }
 
     const handleSaveDetail = () => {
-
+        Api.updateProfile(updateData, profileImage).then((res) => {
+            if (res.status === 404) {
+                throw new Error("Unauthorized");
+            }
+            fetchProfileData();
+        }).catch((error) => {
+            console.error(error.message);
+            alert(error.message); // Optionally show an alert to the user
+        });
     }
 
     const handleDisableAccount = () => {
@@ -47,11 +85,13 @@ export function AdminDetailView() {
         const file = event.target.files?.[0];
         if (!file) return;
 
+        setProfileImage(file);
         // Create a URL for preview
         const imageUrl = URL.createObjectURL(file);
         setSelectedImage(imageUrl);
 
         // Here, you can also upload the image to an API
+
     };
 
     return (
@@ -67,7 +107,7 @@ export function AdminDetailView() {
                         <div style={{ flex: 1, display: 'flex', alignItems: 'flex-start' }}>
                             <div style={{ display: 'flex', gap: 16 }}>
                                 <div style={{ position: 'relative', width: 128, height: 128, backgroundColor: '#ccc', borderRadius: 12 }}>
-                                    <img src={selectedImage || data.avatarUrl} alt="Business Avatar" style={{ width: '100%', height: '100%', borderRadius: 12, objectFit: "cover" }} />
+                                    <img src={selectedImage || `${address}/${data.profilePicture}`} alt="Business Avatar" style={{ width: '100%', height: '100%', borderRadius: 12, objectFit: "cover" }} />
                                     {isEditPage && (
                                         <Button
                                             variant="contained"
@@ -97,6 +137,7 @@ export function AdminDetailView() {
                                             defaultValue={data.appointment}
                                             InputLabelProps={{ shrink: true }}
                                             sx={{ mb: 3, mt: 1 }}
+                                            onChange={(e) => insertUpdateData("appointment", e.target.value)}
                                         />
                                     </div>) : (<div style={{ fontSize: 16, color: '#617A8A' }}>{data.appointment}</div>)}
                                     {isEditPage ? (<div>
@@ -108,6 +149,7 @@ export function AdminDetailView() {
                                             defaultValue={data.role}
                                             InputLabelProps={{ shrink: true }}
                                             sx={{ mb: 3, mt: 1 }}
+                                            onChange={(e) => insertUpdateData("role", e.target.value)}
                                         />
                                     </div>) : (<div style={{ fontSize: 16, color: '#617A8A' }}>{data.role}</div>)}
 
@@ -132,6 +174,7 @@ export function AdminDetailView() {
                                         defaultValue={data.name}
                                         InputLabelProps={{ shrink: true }}
                                         sx={{ mb: 3, mt: 1 }}
+                                        onChange={(e) => insertUpdateData("name", e.target.value)}
                                     />
                                 </div>) : (<div style={{ fontSize: 14 }}>{data.name}</div>)}
                             </div>
@@ -145,6 +188,7 @@ export function AdminDetailView() {
                                         defaultValue={data.address}
                                         InputLabelProps={{ shrink: true }}
                                         sx={{ mb: 3, mt: 1 }}
+                                        onChange={(e) => insertUpdateData("address", e.target.value)}
                                     />
                                 </div>) : (<div style={{ fontSize: 14 }}>{data.address}</div>)}
                             </div>
@@ -160,6 +204,7 @@ export function AdminDetailView() {
                                         defaultValue={data.phoneNumber}
                                         InputLabelProps={{ shrink: true }}
                                         sx={{ mb: 3, mt: 1 }}
+                                        onChange={(e) => insertUpdateData("phoneNumber", e.target.value)}
                                     />
                                 </div>) : (<div style={{ fontSize: 14 }}>{data.phoneNumber}</div>)}
 
@@ -174,6 +219,7 @@ export function AdminDetailView() {
                                         defaultValue={data.dob}
                                         InputLabelProps={{ shrink: true }}
                                         sx={{ mb: 3, mt: 1 }}
+                                        onChange={(e) => insertUpdateData("dob", e.target.value)}
                                     />
                                 </div>) : (<div style={{ fontSize: 14 }}>{data.dob}</div>)}
 
@@ -190,6 +236,7 @@ export function AdminDetailView() {
                                         defaultValue={data.email}
                                         InputLabelProps={{ shrink: true }}
                                         sx={{ mb: 3, mt: 1 }}
+                                        onChange={(e) => insertUpdateData("email", e.target.value)}
                                     />
                                 </div>) : (<div style={{ fontSize: 14 }}>{data.email}</div>)}
                             </div>
@@ -201,6 +248,7 @@ export function AdminDetailView() {
                                         name="password"
                                         label=""
                                         defaultValue={data.password}
+                                        onChange={(e) => insertUpdateData("password", e.target.value)}
                                         InputLabelProps={{ shrink: true }}
                                         sx={{ mb: 3, mt: 1 }}
                                     />

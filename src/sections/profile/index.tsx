@@ -1,22 +1,19 @@
-import { useState, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 
-import Box from '@mui/material/Box';
-import Grid from '@mui/material/Unstable_Grid2';
-import Pagination from '@mui/material/Pagination';
 import Typography from '@mui/material/Typography';
 import { DashboardContent } from 'src/layouts/dashboard';
 import { Button, Card, TextField } from '@mui/material';
 import EditIconSVG from 'src/components/editIconSVG';
+import Api, { address } from 'src/helpers/Api';
 
 // ----------------------------------------------------------------------
 
 export function ProfileView() {
-    const data = {
-        id: "1",
+    const dataPrep = {
         name: "Stacy Lee",
         age: 25,
         status: true,
-        avatarUrl: "/assets/images/avatar/avatar-1.webp",
+        profilePicture: "/assets/images/avatar/avatar-1.webp",
         address: "Parc Valley",
         phoneNumber: "123-456-7890",
         dob: "01/01/1996",
@@ -27,12 +24,48 @@ export function ProfileView() {
         password: "password",
     }
 
+    const [data, setData] = useState(dataPrep);
+    const [updateData, setUpdateData] = useState({});
     const [isEditPage, setEditPage] = useState(false);
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
-    const [showFileInput, setShowFileInput] = useState(false);
+    const [profileImage, setProfileImage] = useState<File | null>(null);
+
+    useEffect(() => {
+        fetchProfileData();
+    }, []);
+
+    const insertUpdateData = (attributeName: string, value: any) => {
+        setUpdateData((prev) => ({ ...prev, [attributeName]: value }));
+    }
+
+    const fetchProfileData = () => {
+        Api.getProfile()
+            .then((res) => {
+                if (res.status === 404) {
+                    throw new Error("Unauthorized");
+                }
+                return res.json();
+            })
+            .then((json) => {
+                setData(json);
+                console.log("Profile data fetched successfully:", json);
+            })
+            .catch((error) => {
+                console.error(error.message);
+                alert(error.message); // Optionally show an alert to the user
+            });
+    };
 
     const handleSaveDetail = () => {
-
+        Api.updateProfile(updateData, profileImage).then((res) => {
+            if (res.status === 404) {
+                throw new Error("Unauthorized");
+            }
+            fetchProfileData();
+        }).catch((error) => {
+            console.error(error.message);
+            alert(error.message); // Optionally show an alert to the user
+        });
     }
 
     const handleDisableAccount = () => {
@@ -47,11 +80,13 @@ export function ProfileView() {
         const file = event.target.files?.[0];
         if (!file) return;
 
+        setProfileImage(file);
         // Create a URL for preview
         const imageUrl = URL.createObjectURL(file);
         setSelectedImage(imageUrl);
 
         // Here, you can also upload the image to an API
+
     };
 
     return (
@@ -67,7 +102,7 @@ export function ProfileView() {
                         <div style={{ flex: 1, display: 'flex', alignItems: 'flex-start' }}>
                             <div style={{ display: 'flex', gap: 16 }}>
                                 <div style={{ position: 'relative', width: 128, height: 128, backgroundColor: '#ccc', borderRadius: 12 }}>
-                                    <img src={selectedImage || data.avatarUrl} alt="Business Avatar" style={{ width: '100%', height: '100%', borderRadius: 12, objectFit: "cover" }} />
+                                    <img src={selectedImage || `${address}/${data.profilePicture}`} alt="Business Avatar" style={{ width: '100%', height: '100%', borderRadius: 12, objectFit: "cover" }} />
                                     {isEditPage && (
                                         <Button
                                             variant="contained"
@@ -95,6 +130,7 @@ export function ProfileView() {
                                             label=""
                                             defaultValue={data.appointment}
                                             InputLabelProps={{ shrink: true }}
+                                            onChange={(e) => insertUpdateData("appointment", e.target.value)}
                                             sx={{ mb: 3, mt: 1 }}
                                         />
                                     </div>) : (<div style={{ fontSize: 16, color: '#617A8A' }}>{data.appointment}</div>)}
@@ -106,6 +142,7 @@ export function ProfileView() {
                                             label=""
                                             defaultValue={data.role}
                                             InputLabelProps={{ shrink: true }}
+                                            onChange={(e) => insertUpdateData("role", e.target.value)}
                                             sx={{ mb: 3, mt: 1 }}
                                         />
                                     </div>) : (<div style={{ fontSize: 16, color: '#617A8A' }}>{data.role}</div>)}
@@ -130,6 +167,7 @@ export function ProfileView() {
                                         label=""
                                         defaultValue={data.name}
                                         InputLabelProps={{ shrink: true }}
+                                        onChange={(e) => insertUpdateData("name", e.target.value)}
                                         sx={{ mb: 3, mt: 1 }}
                                     />
                                 </div>) : (<div style={{ fontSize: 14 }}>{data.name}</div>)}
@@ -143,6 +181,7 @@ export function ProfileView() {
                                         label=""
                                         defaultValue={data.address}
                                         InputLabelProps={{ shrink: true }}
+                                        onChange={(e) => insertUpdateData("address", e.target.value)}
                                         sx={{ mb: 3, mt: 1 }}
                                     />
                                 </div>) : (<div style={{ fontSize: 14 }}>{data.address}</div>)}
@@ -158,6 +197,7 @@ export function ProfileView() {
                                         label=""
                                         defaultValue={data.phoneNumber}
                                         InputLabelProps={{ shrink: true }}
+                                        onChange={(e) => insertUpdateData("phoneNumber", e.target.value)}
                                         sx={{ mb: 3, mt: 1 }}
                                     />
                                 </div>) : (<div style={{ fontSize: 14 }}>{data.phoneNumber}</div>)}
@@ -172,6 +212,7 @@ export function ProfileView() {
                                         label=""
                                         defaultValue={data.dob}
                                         InputLabelProps={{ shrink: true }}
+                                        onChange={(e) => insertUpdateData("dob", e.target.value)}
                                         sx={{ mb: 3, mt: 1 }}
                                     />
                                 </div>) : (<div style={{ fontSize: 14 }}>{data.dob}</div>)}
@@ -188,6 +229,7 @@ export function ProfileView() {
                                         label=""
                                         defaultValue={data.email}
                                         InputLabelProps={{ shrink: true }}
+                                        onChange={(e) => insertUpdateData("email", e.target.value)}
                                         sx={{ mb: 3, mt: 1 }}
                                     />
                                 </div>) : (<div style={{ fontSize: 14 }}>{data.email}</div>)}
@@ -201,6 +243,7 @@ export function ProfileView() {
                                         label=""
                                         defaultValue={data.password}
                                         InputLabelProps={{ shrink: true }}
+                                        onChange={(e) => insertUpdateData("password", e.target.value)}
                                         sx={{ mb: 3, mt: 1 }}
                                     />
                                 </div>) : (<div style={{ fontSize: 14 }}>{data.password}</div>)}
