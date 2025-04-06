@@ -1,7 +1,8 @@
 import { Button, Card, TextField } from '@mui/material';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import EditIconSVG from 'src/components/editIconSVG';
+import Api, { address } from 'src/helpers/Api';
 import { DashboardContent } from 'src/layouts/dashboard';
 import { useRouter } from 'src/routes/hooks';
 
@@ -38,7 +39,7 @@ export function UserDetailView() {
 
   const [textDecorationColor, setTextDecorationColor] = useState('transparent');
 
-  const data = {
+  const dataPrep = {
     id: userId,
     name: "Stacy Lee",
     age: 25,
@@ -52,6 +53,7 @@ export function UserDetailView() {
     dob: "01/01/1996",
     email: "stacy.lee@gmail.com",
     password: "password",
+    profilePicture: "",
     topHistory: [
       {
         businessPic: "/assets/images/avatar/avatar-1.webp",
@@ -71,12 +73,47 @@ export function UserDetailView() {
     ],
   };
 
+  const [data, setData] = useState(dataPrep);
+  const [updateData, setUpdateData] = useState({});
   const [isEditPage, setEditPage] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [showFileInput, setShowFileInput] = useState(false);
+  const [profileImage, setProfileImage] = useState<File | null>(null);
+
+  const fetchProfileData = useCallback(() => {
+    Api.getUserById(userId)
+      .then((res) => {
+        if (res.status === 404) throw new Error("Unauthorized");
+        return res.json();
+      })
+      .then((json) => {
+        setData(json);
+        console.log("Profile data fetched successfully:", json);
+      })
+      .catch((error) => {
+        console.error(error.message);
+        alert(error.message);
+      });
+  }, [userId]);
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    fetchProfileData();
+  }, [fetchProfileData]);
+
+  const insertUpdateData = (attributeName: string, value: any) => {
+    setUpdateData((prev) => ({ ...prev, [attributeName]: value }));
+  }
 
   const handleSaveDetail = () => {
-
+    Api.updateUserProfile(updateData, profileImage, userId).then((res) => {
+      if (res.status !== 204) {
+        throw new Error("Unauthorized");
+      }
+      fetchProfileData();
+    }).catch((error) => {
+      console.error(error.message);
+      alert(error.message); // Optionally show an alert to the user
+    });
   }
 
   const handleDisableAccount = () => {
@@ -91,11 +128,13 @@ export function UserDetailView() {
     const file = event.target.files?.[0];
     if (!file) return;
 
+    setProfileImage(file);
     // Create a URL for preview
     const imageUrl = URL.createObjectURL(file);
     setSelectedImage(imageUrl);
 
     // Here, you can also upload the image to an API
+
   };
 
   const router = useRouter();
@@ -116,7 +155,7 @@ export function UserDetailView() {
             <div style={{ flex: 1, display: 'flex', alignItems: 'flex-start' }}>
               <div style={{ display: 'flex', gap: 16 }}>
                 <div style={{ position: 'relative', width: 128, height: 128, backgroundColor: '#ccc', borderRadius: 12 }}>
-                  <img src={selectedImage || data.avatarUrl} alt="Business Avatar" style={{ width: '100%', height: '100%', borderRadius: 12, objectFit: "cover" }} />
+                  <img src={selectedImage || `${address}/${data.profilePicture}`} alt="Business Avatar" style={{ width: '100%', height: '100%', borderRadius: 12, objectFit: "cover" }} />
                   {isEditPage && (
                     <Button
                       variant="contained"
@@ -144,7 +183,7 @@ export function UserDetailView() {
           <div style={{ width: '100%', padding: 16, display: 'flex', flexDirection: 'column' }}>
             <div style={{ color: '#121417', fontSize: 18, fontWeight: '700' }}>History</div>
           </div>
-          {data.topHistory.map((history, index) => (
+          {data.topHistory?.map((history, index) => (
             <div key={index} style={{ width: '100%', paddingLeft: 16, display: 'flex', flexDirection: 'column' }}>
               <div style={{ display: 'flex', borderTop: '1px solid #E5E8EB', padding: 16 }}>
                 <div style={{ width: 50, height: 50, backgroundColor: '#ccc', borderRadius: 12, marginRight: 16 }}>
@@ -193,6 +232,7 @@ export function UserDetailView() {
                     defaultValue={data.name}
                     InputLabelProps={{ shrink: true }}
                     sx={{ mb: 3, mt: 1 }}
+                    onChange={(e) => insertUpdateData("name", e.target.value)}
                   />
                 </div>) : (<div style={{ fontSize: 14 }}>{data.name}</div>)}
               </div>
@@ -206,6 +246,7 @@ export function UserDetailView() {
                     defaultValue={data.address}
                     InputLabelProps={{ shrink: true }}
                     sx={{ mb: 3, mt: 1 }}
+                    onChange={(e) => insertUpdateData("address", e.target.value)}
                   />
                 </div>) : (<div style={{ fontSize: 14 }}>{data.address}</div>)}
               </div>
@@ -221,6 +262,7 @@ export function UserDetailView() {
                     defaultValue={data.phoneNumber}
                     InputLabelProps={{ shrink: true }}
                     sx={{ mb: 3, mt: 1 }}
+                    onChange={(e) => insertUpdateData("phoneNumber", e.target.value)}
                   />
                 </div>) : (<div style={{ fontSize: 14 }}>{data.phoneNumber}</div>)}
               </div>
@@ -234,6 +276,7 @@ export function UserDetailView() {
                     defaultValue={data.dob}
                     InputLabelProps={{ shrink: true }}
                     sx={{ mb: 3, mt: 1 }}
+                    onChange={(e) => insertUpdateData("dob", e.target.value)}
                   />
                 </div>) : (<div style={{ fontSize: 14 }}>{data.dob}</div>)}
               </div>
@@ -249,6 +292,7 @@ export function UserDetailView() {
                     defaultValue={data.email}
                     InputLabelProps={{ shrink: true }}
                     sx={{ mb: 3, mt: 1 }}
+                    onChange={(e) => insertUpdateData("email", e.target.value)}
                   />
                 </div>) : (<div style={{ fontSize: 14 }}>{data.email}</div>)}
               </div>
@@ -259,9 +303,10 @@ export function UserDetailView() {
                     fullWidth
                     name="password"
                     label=""
-                    defaultValue={data.password}
+                    defaultValue="Enter password to change"
                     InputLabelProps={{ shrink: true }}
                     sx={{ mb: 3, mt: 1 }}
+                    onChange={(e) => insertUpdateData("password", e.target.value)}
                   />
                 </div>) : (<div style={{ fontSize: 14 }}>{data.password}</div>)}
               </div>

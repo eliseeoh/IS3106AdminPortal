@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -8,6 +8,8 @@ import TableBody from '@mui/material/TableBody';
 import Typography from '@mui/material/Typography';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
+
+import Api, { address } from 'src/helpers/Api';
 
 import { _users } from 'src/_mock';
 import { DashboardContent } from 'src/layouts/dashboard';
@@ -26,11 +28,52 @@ import { emptyRows, applyFilter, getComparator } from '../utils';
 import type { UserProps } from '../user-table-row';
 
 // ----------------------------------------------------------------------
+function renameKeys(input: any): UserProps[] {
+  // @ts-ignore
+  const renamedArr = input.map((item) => {
+    const renamed = {
+      id: item._id,
+      name: item.name,
+      subscriptionType: item.subscriptionType,
+      subscriptionStatus: item.subscriptionStatus,
+      status: item.status,
+      avatarUrl: `${address}${item.profilePicture}`,
+      entityType: item.entityType,
+    };
+    return renamed;
+  });
+  return renamedArr;
+}
+
 
 export function UserView() {
   const table = useTable();
 
   const [filterName, setFilterName] = useState('');
+  const [initialData, setInitialData] = useState([]);
+
+  // TO-DO: fetch data from API
+  const _users = renameKeys(initialData);
+
+  useEffect(() => {
+    fetchAdminsData();
+  }, []);
+
+  async function fetchAdminsData() {
+    await Api.getAllUsers()
+      .then((response) => {
+        if (response.status === 200) {
+          return response.json();
+        }
+        return new Error('Failed to fetch admins data');
+      }).then((data) => {
+        console.log(data);
+        setInitialData(data);
+      })
+      .catch((error) => {
+        console.error('Error fetching admins data:', error);
+      });
+  }
 
   // TO-DO: fetch data from API
   const dataFiltered: UserProps[] = applyFilter({
@@ -41,15 +84,6 @@ export function UserView() {
 
   const notFound = !dataFiltered.length && !!filterName;
 
-  const [open, setOpen] = useState(false);
-
-  const handleOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
 
   return (
     <DashboardContent>
@@ -129,9 +163,6 @@ export function UserView() {
           onRowsPerPageChange={table.onChangeRowsPerPage}
         />
 
-        <Button variant="contained" onClick={handleOpen}>
-          Open Centered Popover
-        </Button>
       </Card>
     </DashboardContent>
 

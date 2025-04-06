@@ -1,7 +1,8 @@
 import { Button, Card, TextField } from '@mui/material';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import EditIconSVG from 'src/components/editIconSVG';
+import Api, { address } from 'src/helpers/Api';
 import { DashboardContent } from 'src/layouts/dashboard';
 
 // ----------------------------------------------------------------------
@@ -9,28 +10,63 @@ import { DashboardContent } from 'src/layouts/dashboard';
 export function BusinessDetailView() {
   const { businessId } = useParams();
 
-  const data = {
+  const dataPrep = {
     id: businessId,
     name: "Business Name",
-    location: "Singapore Clementi Mall",
+    address: "Singapore Clementi Mall",
     isOperational: true,
     status: true,
-    avatarUrl: "/assets/images/avatar/avatar-1.webp",
-    entityType: "business",
-    businessType: "Arts and Craft",
-    businessDescription: "Business description",
-    phoneNumber: "123-456-7890",
-    websiteUrl: "www.openjio.com",
-    email: "business@gmai.com",
-    password: "password",
+    entityType: "",
+    businessType: "",
+    businessDescription: "",
+    phone: "",
+    website: "",
+    email: "",
+    password: "",
+    profilePicture: "",
   };
 
+  const [data, setData] = useState(dataPrep);
+  const [updateData, setUpdateData] = useState({});
   const [isEditPage, setEditPage] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [showFileInput, setShowFileInput] = useState(false);
+  const [profileImage, setProfileImage] = useState<File | null>(null);
+
+  const fetchProfileData = useCallback(() => {
+    Api.getBusinessById(businessId)
+      .then((res) => {
+        if (res.status === 404) throw new Error("Unauthorized");
+        return res.json();
+      })
+      .then((json) => {
+        setData(json.business);
+        console.log("Profile data fetched successfully:", json);
+      })
+      .catch((error) => {
+        console.error(error.message);
+        alert(error.message);
+      });
+  }, [businessId]);
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    fetchProfileData();
+  }, [fetchProfileData]);
+
+  const insertUpdateData = (attributeName: string, value: any) => {
+    setUpdateData((prev) => ({ ...prev, [attributeName]: value }));
+  }
 
   const handleSaveDetail = () => {
-
+    Api.updateBusinessProfile(updateData, profileImage, businessId).then((res) => {
+      if (res.status === 404) {
+        throw new Error("Unauthorized");
+      }
+      fetchProfileData();
+    }).catch((error) => {
+      console.error(error.message);
+      alert(error.message); // Optionally show an alert to the user
+    });
   }
 
   const handleDisableAccount = () => {
@@ -45,11 +81,13 @@ export function BusinessDetailView() {
     const file = event.target.files?.[0];
     if (!file) return;
 
+    setProfileImage(file);
     // Create a URL for preview
     const imageUrl = URL.createObjectURL(file);
     setSelectedImage(imageUrl);
 
     // Here, you can also upload the image to an API
+
   };
 
   return (
@@ -68,7 +106,7 @@ export function BusinessDetailView() {
             <div style={{ flex: 1, display: 'flex', alignItems: 'flex-start' }}>
               <div style={{ display: 'flex', gap: 16 }}>
                 <div style={{ position: 'relative', width: 128, height: 128, backgroundColor: '#ccc', borderRadius: 12 }}>
-                  <img src={selectedImage || data.avatarUrl} alt="Business Avatar" style={{ width: '100%', height: '100%', borderRadius: 12, objectFit: "cover" }} />
+                  <img src={selectedImage || `${address}/${data.profilePicture}`} alt="Business Avatar" style={{ width: '100%', height: '100%', borderRadius: 12, objectFit: "cover" }} />
                   {isEditPage && (
                     <Button
                       variant="contained"
@@ -88,7 +126,7 @@ export function BusinessDetailView() {
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
                   <div style={{ fontSize: 22, fontWeight: '700' }}>{data.name}</div>
-                  {isEditPage ? (<></>) : (<div style={{ fontSize: 16, color: '#617A8A' }}>{data.location}</div>)}
+                  {isEditPage ? (<></>) : (<div style={{ fontSize: 16, color: '#617A8A' }}>{data.address}</div>)}
                   {isEditPage ? (<div>
                     <TextField
                       fullWidth
@@ -97,6 +135,7 @@ export function BusinessDetailView() {
                       defaultValue={data.businessType}
                       InputLabelProps={{ shrink: true }}
                       sx={{ mb: 3, mt: 1 }}
+                      onChange={(e) => insertUpdateData("businessType", e.target.value)}
                     />
                   </div>) : (<div style={{ fontSize: 16, color: '#617A8A' }}>{data.businessType}</div>)}
 
@@ -119,6 +158,7 @@ export function BusinessDetailView() {
                     defaultValue={data.name}
                     InputLabelProps={{ shrink: true }}
                     sx={{ mb: 3, mt: 1 }}
+                    onChange={(e) => insertUpdateData("name", e.target.value)}
                   />
                 </div>) : (<div style={{ fontSize: 14 }}>{data.name}</div>)}
 
@@ -130,11 +170,12 @@ export function BusinessDetailView() {
                     fullWidth
                     name="address"
                     label=""
-                    defaultValue={data.location}
+                    defaultValue={data.address}
                     InputLabelProps={{ shrink: true }}
                     sx={{ mb: 3, mt: 1 }}
+                    onChange={(e) => insertUpdateData("address", e.target.value)}
                   />
-                </div>) : (<div style={{ fontSize: 14 }}>{data.location}</div>)}
+                </div>) : (<div style={{ fontSize: 14 }}>{data.address}</div>)}
               </div>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid #E5E8EB', padding: 16 }}>
@@ -145,24 +186,27 @@ export function BusinessDetailView() {
                     fullWidth
                     name="phoneNumber"
                     label=""
-                    defaultValue={data.phoneNumber}
+                    defaultValue={data.phone}
                     InputLabelProps={{ shrink: true }}
                     sx={{ mb: 3, mt: 1 }}
+                    onChange={(e) => insertUpdateData("phoneNumber", e.target.value)}
                   />
-                </div>) : (<div style={{ fontSize: 14 }}>{data.phoneNumber}</div>)}
+                </div>) : (<div style={{ fontSize: 14 }}>{data.phone}</div>)}
               </div>
               <div style={{ flex: 1 }}>
                 <div style={{ fontSize: 14, color: '#617A8A' }}>Website</div>
                 {isEditPage ? (<div>
                   <TextField
                     fullWidth
-                    name="websiteUrl"
+                    name="website"
                     label=""
-                    defaultValue={data.websiteUrl}
+                    defaultValue={data.website}
                     InputLabelProps={{ shrink: true }}
                     sx={{ mb: 3, mt: 1 }}
+                    onChange={(e) => insertUpdateData("website", e.target.value)}
                   />
-                </div>) : (<div style={{ fontSize: 14 }}>{data.websiteUrl}</div>)}
+                </div>) : (<div style={{ fontSize: 14 }}>
+                  <a href={`https://${data.website}`} target="_blank" rel="noopener noreferrer">{data.website}</a></div>)}
               </div>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid #E5E8EB', padding: 16 }}>
@@ -176,6 +220,7 @@ export function BusinessDetailView() {
                     defaultValue={data.email}
                     InputLabelProps={{ shrink: true }}
                     sx={{ mb: 3, mt: 1 }}
+                    onChange={(e) => insertUpdateData("email", e.target.value)}
                   />
                 </div>) : (<div style={{ fontSize: 14 }}>{data.email}</div>)}
               </div>
@@ -189,6 +234,7 @@ export function BusinessDetailView() {
                     defaultValue={data.password}
                     InputLabelProps={{ shrink: true }}
                     sx={{ mb: 3, mt: 1 }}
+                    onChange={(e) => insertUpdateData("password", e.target.value)}
                   />
                 </div>) : (<div style={{ fontSize: 14 }}>{data.password}</div>)}
               </div>

@@ -36,7 +36,7 @@ function renameKeys(input): UserProps[] {
             subscriptionType: item.appointment,
             subscriptionStatus: item.role,
             status: item.status,
-            avatarUrl: `${address}/${item.profilePicture}`,
+            avatarUrl: `${address}${item.profilePicture}`,
             entityType: item.entityType,
         };
         return renamed;
