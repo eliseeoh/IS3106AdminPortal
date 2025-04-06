@@ -39,6 +39,14 @@ const Api = {
             },
             method: "GET",
         });
+    },
+    getAllBusinesses() {
+        return fetch("http://localhost:3000/api/businesses/all", {
+            headers: {
+                "authorization": `Bearer ${localStorage.getItem("accesstoken")}`,
+            },
+            method: "GET",
+        });
     }
 }
 

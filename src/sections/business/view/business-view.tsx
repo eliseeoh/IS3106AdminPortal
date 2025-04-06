@@ -1,4 +1,5 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
+import Api, { address } from 'src/helpers/Api';
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -30,12 +31,12 @@ function renameKeys(input): UserProps[] {
   // @ts-ignore
   const renamedArr = input.map((item) => {
     const renamed = {
-      id: item.id,
+      id: item._id,
       name: item.name,
-      subscriptionType: item.location,
+      subscriptionType: item.address,
       subscriptionStatus: item.isOperational,
       status: item.status,
-      avatarUrl: item.avatarUrl,
+      avatarUrl: `${address}/${item.profileImage}`,
       isUserOrBusiness: item.isUserOrBusiness,
     };
     return renamed;
@@ -47,16 +48,36 @@ export function BusinessView() {
   const table = useTable();
 
   const [filterName, setFilterName] = useState('');
+  const [initialData, setInitialData] = useState([]);
 
   // TO-DO: fetch data from API
-  const _business = renameKeys(_businesses);
+  const _business = renameKeys(initialData);
   const dataFiltered: UserProps[] = applyFilter({
     inputData: _business,
     comparator: getComparator(table.order, table.orderBy),
     filterName,
   });
 
+  useEffect(() => {
+    fetchBusinssesData();
+  }, []);
+
   const notFound = !dataFiltered.length && !!filterName;
+
+  function fetchBusinssesData() {
+    Api.getAllBusinesses()
+      .then((response) => {
+        if (response.status === 200) {
+          return response.json();
+        }
+        return new Error('Failed to fetch businesses data');
+      }).then((data) => {
+        setInitialData(data.businesses);
+      })
+      .catch((error) => {
+        console.error('Error fetching businesses data:', error);
+      });
+  }
 
   return (
     <DashboardContent>
