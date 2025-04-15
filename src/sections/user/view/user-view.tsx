@@ -52,9 +52,6 @@ export function UserView() {
   const [filterName, setFilterName] = useState('');
   const [initialData, setInitialData] = useState([]);
 
-  // TO-DO: fetch data from API
-  const _users = renameKeys(initialData);
-
   useEffect(() => {
     fetchAdminsData();
   }, []);
@@ -68,7 +65,8 @@ export function UserView() {
         return new Error('Failed to fetch admins data');
       }).then((data) => {
         console.log(data);
-        setInitialData(data);
+        // @ts-ignore
+        setInitialData(renameKeys(data));
       })
       .catch((error) => {
         console.error('Error fetching admins data:', error);
@@ -77,7 +75,7 @@ export function UserView() {
 
   // TO-DO: fetch data from API
   const dataFiltered: UserProps[] = applyFilter({
-    inputData: _users,
+    inputData: initialData,
     comparator: getComparator(table.order, table.orderBy),
     filterName,
   });
