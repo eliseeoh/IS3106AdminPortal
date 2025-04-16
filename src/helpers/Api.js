@@ -153,6 +153,48 @@ const Api = {
             method: "PATCH",
         });
     },
+    getSubscription() {
+        return fetch(`${address}/api/system/subscription`, {
+            method: "GET",
+            headers: {
+                "authorization": `Bearer ${localStorage.getItem("accesstoken")}`,
+            },
+        });
+    },
+    updateSubscription(subscription) {
+        return fetch(`${address}/api/system/subscription`, {
+            method: "PUT",
+            headers: {
+                "authorization": `Bearer ${localStorage.getItem("accesstoken")}`,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ subscription }),
+        });
+    },
+    getTotalBusinessCount() {
+        return fetch(`${address}/api/businesses/monthlyCount`, {
+            method: "GET",
+            headers: {
+                "authorization": `Bearer ${localStorage.getItem("accesstoken")}`,
+            },
+        });
+    },
+    getTotalSubscribedUsersCount() {
+        return fetch(`${address}/api/users/subscribedUsers`, {
+            method: "GET",
+            headers: {
+                "authorization": `Bearer ${localStorage.getItem("accesstoken")}`,
+            }
+        });
+    },
+    getAllSubscribedUsers() {
+        return fetch(`${address}/api/users/allSubscribedUsers`, {
+            method: "GET",
+            headers: {
+                "authorization": `Bearer ${localStorage.getItem("accesstoken")}`,
+            }
+        });
+    }
 }
 
 export default Api;
