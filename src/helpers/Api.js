@@ -153,6 +153,22 @@ const Api = {
             method: "PATCH",
         });
     },
+    getBookingsFromBusiness(businessId) {
+        return fetch(`http://localhost:3000/api/bookings/businessBookings/${businessId}`, {
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('accesstoken')}`,
+            }
+        })
+    },
+    getBookingsFromUser(userId) {
+        return fetch(`http://localhost:3000/api/bookings/userBookings/${userId}`, {
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('accesstoken')}`,
+            }
+        })
+    },
     getSubscription() {
         return fetch(`${address}/api/system/subscription`, {
             method: "GET",

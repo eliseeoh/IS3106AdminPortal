@@ -178,6 +178,18 @@ export function BusinessDetailView({ profile, handleFetchProfile }: { profile: P
           </div>
 
           <div style={{ width: '100%', padding: 16, display: 'flex', flexDirection: 'column' }}>
+            <div style={{ color: '#121417', fontSize: 18, fontWeight: '700' }}>Additional Actions</div>
+            <div style={{ display: 'flex', flexDirection: 'row', gap: 10 }}>
+              {/* <Button onClick={() => { navigate(`activities`) }} variant="contained" color="primary" style={{ padding: '12px 24px', borderRadius: 8, textTransform: 'none', maxHeight: 40 }}>
+                <div style={{ fontSize: 14, fontWeight: '700' }}>View All Activities</div>
+              </Button> */}
+              <Button onClick={() => { navigate(`bookings`) }} variant="contained" color="primary" style={{ padding: '12px 24px', borderRadius: 8, textTransform: 'none', maxHeight: 40 }}>
+                <div style={{ fontSize: 14, fontWeight: '700' }}>View All Bookings</div>
+              </Button>
+            </div>
+          </div>
+
+          <div style={{ width: '100%', padding: 16, display: 'flex', flexDirection: 'column' }}>
             <div style={{ color: '#121417', fontSize: 18, fontWeight: '700', marginBottom: 12 }}>Gallery</div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, alignItems: 'center' }}>
               {profile.gallery?.map((imgUrl, index) => (
