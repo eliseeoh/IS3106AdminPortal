@@ -12,6 +12,7 @@ import { UserHistoryView } from 'src/sections/userHistory';
 import AdminPage from 'src/pages/admin';
 import AdminDetailPage from 'src/pages/admin-detail';
 import WydProcessesPage from 'src/pages/wyd-processes';
+import GalleryPage from 'src/pages/business-gallery';
 
 // ----------------------------------------------------------------------
 
@@ -68,6 +69,7 @@ export function Router() {
         { path: 'user', element: <UserPage /> },
         { path: 'user/:userId', element: <UserDetailPage /> },
         { path: 'business', element: <BusinessPage /> },
+        { path: 'business/:businessId/gallery', element: <GalleryPage /> },
         { path: 'business/:businessId', element: <BusinessDetailPage /> },
         { path: 'products', element: <ProductsPage /> },
         { path: 'blog', element: <BlogPage /> },

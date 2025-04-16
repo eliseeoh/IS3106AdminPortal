@@ -262,9 +262,9 @@ export function AdminDetailView() {
                                 <Button onClick={() => setEditPage(true)} variant="contained" color="primary" style={{ padding: '12px 24px', borderRadius: 8, textTransform: 'none' }}>
                                     <div style={{ fontSize: 14, fontWeight: '700' }}>Edit Admin Details</div>
                                 </Button>
-                                <Button onClick={handleDisableAccount} variant="contained" color="secondary" style={{ padding: '12px 24px', borderRadius: 8, textTransform: 'none' }}>
+                                {/* {<Button onClick={handleDisableAccount} variant="contained" color="secondary" style={{ padding: '12px 24px', borderRadius: 8, textTransform: 'none' }}>
                                     <div style={{ fontSize: 14, fontWeight: '700' }}>Disable Account</div>
-                                </Button>
+                                </Button>} */}
                             </>
                         ) : (
                             <>
