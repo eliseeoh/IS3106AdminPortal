@@ -20,12 +20,13 @@ export const HomePage = lazy(() => import('src/pages/home'));
 export const BlogPage = lazy(() => import('src/pages/blog'));
 export const UserPage = lazy(() => import('src/pages/user'));
 export const SignInPage = lazy(() => import('src/pages/sign-in'));
-export const ProductsPage = lazy(() => import('src/pages/products'));
 export const Page404 = lazy(() => import('src/pages/page-not-found'));
 export const BusinessPage = lazy(() => import('src/pages/business'));
 export const UserDetailPage = lazy(() => import('src/pages/user-detail'));
 export const BusinessDetailPage = lazy(() => import('src/pages/business-detail'));
 export const ProfilePage = lazy(() => import('src/pages/profile'));
+export const BookingBusinessPage = lazy(() => import('src/pages/bookings_business'));
+export const BookingUserPage = lazy(() => import('src/pages/bookings_user'));
 
 // ----------------------------------------------------------------------
 
@@ -68,10 +69,11 @@ export function Router() {
         { path: 'home', element: <HomePage /> },
         { path: 'user', element: <UserPage /> },
         { path: 'user/:userId', element: <UserDetailPage /> },
+        { path: 'user/:userId/bookings', element: <BookingUserPage /> },
         { path: 'business', element: <BusinessPage /> },
         { path: 'business/:businessId/gallery', element: <GalleryPage /> },
+        { path: 'business/:businessId/bookings', element: <BookingBusinessPage /> },
         { path: 'business/:businessId', element: <BusinessDetailPage /> },
-        { path: 'products', element: <ProductsPage /> },
         { path: 'blog', element: <BlogPage /> },
         { path: 'profile', element: <ProfilePage /> },
         { path: 'userHistory/:userId', element: <UserHistoryView /> },

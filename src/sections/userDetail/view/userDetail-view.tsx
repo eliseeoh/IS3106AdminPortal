@@ -159,6 +159,15 @@ export function UserDetailView({ profile, handleFetchProfile }: { profile: any, 
           </div>
 
           <div style={{ width: '100%', padding: 16, display: 'flex', flexDirection: 'column' }}>
+            <div style={{ color: '#121417', fontSize: 18, fontWeight: '700' }}>Additional Actions</div>
+            <div style={{ display: 'flex', flexDirection: 'row', gap: 10 }}>
+              <Button onClick={() => { navigate(`bookings`) }} variant="contained" color="primary" style={{ padding: '12px 24px', borderRadius: 8, textTransform: 'none', maxHeight: 40 }}>
+                <div style={{ fontSize: 14, fontWeight: '700' }}>View All Bookings</div>
+              </Button>
+            </div>
+          </div>
+
+          <div style={{ width: '100%', padding: 16, display: 'flex', flexDirection: 'column' }}>
             <div style={{ color: '#121417', fontSize: 18, fontWeight: '700' }}>User Details</div>
           </div>
           <div style={{ width: '100%', padding: 16, display: 'flex', flexDirection: 'column' }}>
