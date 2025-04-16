@@ -34,8 +34,8 @@ function renameKeys(input: any): UserProps[] {
     const renamed = {
       id: item._id,
       name: item.name,
-      subscriptionType: item.subscriptionType,
-      subscriptionStatus: item.subscriptionStatus,
+      subscriptionType: item.subscriptionId ? item.subscriptionId : "-",
+      subscriptionStatus: item.subscriptionId,
       status: item.status,
       avatarUrl: `${address}${item.profilePicture}`,
       entityType: item.entityType,

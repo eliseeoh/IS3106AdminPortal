@@ -80,7 +80,7 @@ const Api = {
         });
     },
     getUserById(id) {
-        return fetch(`http://localhost:3000/api/users/profileId/${id}`, {
+        return fetch(`http://localhost:3000/api/users/profileDetails/${id}`, {
             headers: {
                 "authorization": `Bearer ${localStorage.getItem("accesstoken")}`,
             },
@@ -100,6 +100,57 @@ const Api = {
             },
             method: "PUT",
             body: formData
+        });
+    },
+    uploadGalleryImage(formData, businessId) {
+        return fetch(`${address}/api/businesses/galleryImage/${businessId}`, {
+            headers: {
+                "authorization": `Bearer ${localStorage.getItem("accesstoken")}`,
+            },
+            method: "POST",
+            body: formData
+        });
+    },
+    deleteGalleryImage(imageId, businessId) {
+        return fetch(`${address}/api/businesses/galleryImage/delete/${businessId}`, {
+            headers: {
+                "authorization": `Bearer ${localStorage.getItem("accesstoken")}`,
+                "Content-Type": "application/json"
+            },
+            method: "POST",
+            body: JSON.stringify({ image: imageId })
+        });
+    },
+    disableBusinessAccount(businessId) {
+        return fetch(`${address}/api/businesses/disable/${businessId}`, {
+            headers: {
+                "authorization": `Bearer ${localStorage.getItem("accesstoken")}`,
+            },
+            method: "PATCH",
+        });
+    },
+    enableBusinessAccount(businessId) {
+        return fetch(`${address}/api/businesses/enable/${businessId}`, {
+            headers: {
+                "authorization": `Bearer ${localStorage.getItem("accesstoken")}`,
+            },
+            method: "PATCH",
+        });
+    },
+    disableUserAccount(userId) {
+        return fetch(`${address}/api/users/disable/${userId}`, {
+            headers: {
+                "authorization": `Bearer ${localStorage.getItem("accesstoken")}`,
+            },
+            method: "PATCH",
+        });
+    },
+    enableUserAccount(userId) {
+        return fetch(`${address}/api/users/enable/${userId}`, {
+            headers: {
+                "authorization": `Bearer ${localStorage.getItem("accesstoken")}`,
+            },
+            method: "PATCH",
         });
     },
 }
