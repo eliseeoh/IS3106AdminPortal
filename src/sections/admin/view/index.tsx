@@ -15,29 +15,31 @@ import { DashboardContent } from 'src/layouts/dashboard';
 import { Iconify } from 'src/components/iconify';
 import { Scrollbar } from 'src/components/scrollbar';
 import Api, { address } from 'src/helpers/Api';
+import { useRouter } from 'src/routes/hooks';
 
 import { TableNoData } from '../../user/table-no-data';
-import { UserTableRow } from '../../user/user-table-row';
+import { UserTableRow } from '../admin-table-row'
 import { UserTableHead } from '../../user/user-table-head';
 import { TableEmptyRows } from '../../user/table-empty-rows';
 import { UserTableToolbar } from '../../user/user-table-toolbar';
-import { emptyRows, applyFilter, getComparator } from '../../user/utils';
-
-import type { UserProps } from '../../user/user-table-row';
+import { emptyRows, getComparator } from '../../user/utils';
+import { applyFilter, AdminProps } from '../utils';
 
 // ----------------------------------------------------------------------
 // @ts-ignore
-function renameKeys(input): UserProps[] {
+function renameKeys(input): AdminProps[] {
     // @ts-ignore
     const renamedArr = input.map((item) => {
         const renamed = {
             id: item._id,
             name: item.name,
-            subscriptionType: item.appointment,
-            subscriptionStatus: item.role,
+            appointment: item.appointment,
+            role: item.role,
             status: item.status,
             avatarUrl: `${address}${item.profilePicture}`,
             entityType: item.entityType,
+            email: item.email,
+            phoneNumber: item.phoneNumber,
         };
         return renamed;
     });
@@ -45,6 +47,7 @@ function renameKeys(input): UserProps[] {
 }
 
 export function AdminView() {
+    const router = useRouter();
     const table = useTable();
 
     const [filterName, setFilterName] = useState('');
@@ -73,7 +76,7 @@ export function AdminView() {
             });
     }
 
-    const dataFiltered: UserProps[] = applyFilter({
+    const dataFiltered: AdminProps[] = applyFilter({
         inputData: _admin,
         comparator: getComparator(table.order, table.orderBy),
         filterName,
@@ -87,6 +90,16 @@ export function AdminView() {
                 <Typography variant="h4" flexGrow={1}>
                     Admins
                 </Typography>
+                <Button
+                    variant="contained"
+                    startIcon={<Iconify icon="eva:plus-fill" />}
+                    onClick={() => {
+                        router.push('/admin/create');
+                    }
+                    }
+                >
+                    New Admin
+                </Button>
             </Box>
 
             <Card>
@@ -117,10 +130,12 @@ export function AdminView() {
                                 }
                                 headLabel={[
                                     { id: 'name', label: 'Name' },
-                                    { id: 'appointment', label: 'Appointment' },
+                                    // { id: 'appointment', label: 'Appointment' },
                                     { id: 'role', label: 'Role' },
+                                    { id: 'contact', label: 'Phone' },
+                                    { id: 'email', label: 'Email' },
                                     { id: 'status', label: 'Status' },
-                                    { id: '' },
+                                    { id: 'action', label: '' },
                                 ]}
                             />
                             <TableBody>

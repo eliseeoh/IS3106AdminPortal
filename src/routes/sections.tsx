@@ -27,6 +27,7 @@ export const BusinessDetailPage = lazy(() => import('src/pages/business-detail')
 export const ProfilePage = lazy(() => import('src/pages/profile'));
 export const BookingBusinessPage = lazy(() => import('src/pages/bookings_business'));
 export const BookingUserPage = lazy(() => import('src/pages/bookings_user'));
+export const CreateAdminPage = lazy(() => import('src/pages/create-new-admin'));
 
 // ----------------------------------------------------------------------
 
@@ -79,6 +80,7 @@ export function Router() {
         { path: 'userHistory/:userId', element: <UserHistoryView /> },
         { path: 'admin', element: <AdminPage /> },
         { path: 'admin/:adminId', element: <AdminDetailPage /> },
+        { path: 'admin/create', element: <CreateAdminPage />},
         { path: 'processes', element: <WydProcessesPage /> },
       ],
     },

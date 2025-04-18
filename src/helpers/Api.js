@@ -210,6 +210,25 @@ const Api = {
                 "authorization": `Bearer ${localStorage.getItem("accesstoken")}`,
             }
         });
+    },
+    changePassword(oldPassword, newPassword) {
+        return fetch(`${address}/api/admins/changePassword`, {
+            method: "PUT",
+            headers: {
+                "authorization": `Bearer ${localStorage.getItem("accesstoken")}`,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ oldPassword, newPassword }),
+        });
+    },
+    createAdmin(formData) {
+        return fetch(`${address}/api/admins`, {
+            method: "POST",
+            headers: {
+                "authorization": `Bearer ${localStorage.getItem("accesstoken")}`,
+            },
+            body: formData,
+        });
     }
 }
 

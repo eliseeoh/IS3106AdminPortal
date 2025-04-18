@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 
 import { CONFIG } from 'src/config-global';
-import { ProfileView } from 'src/sections/profile';
+import { ProfileView } from 'src/sections/profile/view/index';
 
 // ----------------------------------------------------------------------
 

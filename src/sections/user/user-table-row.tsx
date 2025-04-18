@@ -91,7 +91,7 @@ export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) 
           </TableCell>
         )}
 
-
+        <TableCell>{row.id}</TableCell>
         <TableCell>
           <Label color={!row.status ? 'error' : 'success'}>{row.status ? "Active" : "Banned"}</Label>
         </TableCell>
