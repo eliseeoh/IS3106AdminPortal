@@ -4,11 +4,12 @@ import { DashboardContent } from 'src/layouts/dashboard';
 import { Button, Card, TextField } from '@mui/material';
 import EditIconSVG from 'src/components/editIconSVG';
 import Api, { address } from 'src/helpers/Api';
+import { useRouter } from 'src/routes/hooks';
 import ChangePasswordDialog from '../changePasswordDialog';
-
 // ----------------------------------------------------------------------
 
 export function ProfileView() {
+    const Router = useRouter();
     const dataPrep = {
         name: "Stacy Lee",
         age: 25,
@@ -78,7 +79,19 @@ export function ProfileView() {
     }
 
     const handleDisableAccount = () => {
-        // Disable account
+        Api.disableAccount()
+            .then((res) => { 
+                if (res.ok ) {
+                    Router.push('/sign-in');
+                }
+                else {
+                    throw new Error("Failed to disable account");
+                }
+            })
+            .catch((error) => {
+                console.error(error.message);
+                alert(error.message); // Optionally show an alert to the user
+            });
     }
 
     const changeProfilePicture = () => {

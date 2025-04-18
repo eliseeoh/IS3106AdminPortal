@@ -229,6 +229,22 @@ const Api = {
             },
             body: formData,
         });
+    },
+    deleteAdmin(adminId) {
+        return fetch(`${address}/api/admins/${adminId}`, {
+            method: "DELETE",
+            headers: {
+                "authorization": `Bearer ${localStorage.getItem("accesstoken")}`, 
+            },
+        });
+    },
+    disableAccount() {
+        return fetch(`${address}/api/admins/disable`, {
+            method: "PUT",
+            headers: {
+                "authorization": `Bearer ${localStorage.getItem("accesstoken")}`,
+            },
+        });
     }
 }
 

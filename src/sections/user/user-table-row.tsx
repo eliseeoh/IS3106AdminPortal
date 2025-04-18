@@ -9,12 +9,11 @@ import MenuList from '@mui/material/MenuList';
 import TableCell from '@mui/material/TableCell';
 import IconButton from '@mui/material/IconButton';
 import MenuItem, { menuItemClasses } from '@mui/material/MenuItem';
-
+import Api from 'src/helpers/Api';
 import { Label } from 'src/components/label';
 import { Iconify } from 'src/components/iconify';
 
 import { useRouter, usePathname } from 'src/routes/hooks';
-
 // ----------------------------------------------------------------------
 
 export type UserProps = {
@@ -61,6 +60,38 @@ export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) 
     [handleClosePopover, router]
   );
 
+  const handleDeleteItem = useCallback(
+    (entityType: String, path: string) => {
+      console.log(`Deleting ${entityType} with ID: ${path}`);
+      handleClosePopover();
+      if (entityType === "user") {
+        // router.push(`/user/${path}/delete`);
+      }
+      else if (entityType === "business") {
+        // router.push(`/business/${path}/delete`);
+      }
+      else {
+        console.log(`Deleting admin with ID: ${path}`);
+        Api.deleteAdmin(path)
+          .then((response) => {
+            if (response.ok) {
+              router.refresh();
+              console.log('Admin deleted successfully');
+            } else if (response.status === 403) {
+              console.log('You do not have permission to delete this admin.');
+            } else {
+              console.error('Failed to delete admin:', response.statusText);
+            }
+            
+          })
+          .catch((error) => {
+            console.error('Error deleting admin:', error);
+          });
+      }
+    }
+    , [handleClosePopover, router]
+  );
+
   return (
     <>
       <TableRow hover tabIndex={-1} role="checkbox" selected={selected}>
@@ -91,7 +122,6 @@ export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) 
           </TableCell>
         )}
 
-        <TableCell>{row.id}</TableCell>
         <TableCell>
           <Label color={!row.status ? 'error' : 'success'}>{row.status ? "Active" : "Banned"}</Label>
         </TableCell>
@@ -133,7 +163,7 @@ export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) 
 
           <MenuItem onClick={handleClosePopover} sx={{ color: 'error.main' }}>
             <Iconify icon="solar:trash-bin-trash-bold" />
-            Delete
+            Deleted
           </MenuItem>
         </MenuList>
       </Popover>

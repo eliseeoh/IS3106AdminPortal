@@ -12,6 +12,7 @@ import MenuItem, { menuItemClasses } from '@mui/material/MenuItem';
 
 import { Label } from 'src/components/label';
 import { Iconify } from 'src/components/iconify';
+import Api from 'src/helpers/Api';
 
 import { useRouter, usePathname } from 'src/routes/hooks';
 import { AdminProps } from './utils';
@@ -51,6 +52,38 @@ export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) 
         },
         [handleClosePopover, router]
     );
+
+    const handleDeleteItem = useCallback(
+        (entityType: String, path: string) => {
+          console.log(`Deleting ${entityType} with ID: ${path}`);
+          handleClosePopover();
+          if (entityType === "user") {
+            // router.push(`/user/${path}/delete`);
+          }
+          else if (entityType === "business") {
+            // router.push(`/business/${path}/delete`);
+          }
+          else {
+            console.log(`Deleting admin with ID: ${path}`);
+            Api.deleteAdmin(path)
+              .then((response) => {
+                if (response.ok) {
+                  router.refresh();
+                  console.log('Admin deleted successfully');
+                } else if (response.status === 403) {
+                  console.log('You do not have permission to delete this admin.');
+                } else {
+                  console.error('Failed to delete admin:', response.statusText);
+                }
+                
+              })
+              .catch((error) => {
+                console.error('Error deleting admin:', error);
+              });
+          }
+        }
+        , [handleClosePopover, router]
+      );
 
     return (
         <>
@@ -115,7 +148,7 @@ export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) 
                         View
                     </MenuItem>
 
-                    <MenuItem onClick={handleClosePopover} sx={{ color: 'error.main' }}>
+                    <MenuItem onClick={() => handleDeleteItem(row.entityType, row.id)} sx={{ color: 'error.main' }}>
                         <Iconify icon="solar:trash-bin-trash-bold" />
                         Delete
                     </MenuItem>
