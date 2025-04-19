@@ -29,8 +29,8 @@ type UserTableRowProps = {
     setOpenSnackbar: (open: boolean) => void;
 };
 
-export function UserTableRow({ row, selected, onSelectRow 
-    , setSnackbarMessage, setSnackbarSeverity, 
+export function UserTableRow({ row, selected, onSelectRow
+    , setSnackbarMessage, setSnackbarSeverity,
     setOpenSnackbar
 }: UserTableRowProps) {
 
@@ -122,7 +122,7 @@ export function UserTableRow({ row, selected, onSelectRow
         <>
             <TableRow hover tabIndex={-1} role="checkbox" selected={selected}>
                 <TableCell padding="checkbox">
-                    <Checkbox disableRipple checked={selected} onChange={onSelectRow} />
+                    {/* <Checkbox disableRipple checked={selected} onChange={onSelectRow} /> */}
                 </TableCell>
 
                 <TableCell component="th" scope="row">
@@ -181,10 +181,10 @@ export function UserTableRow({ row, selected, onSelectRow
                         View
                     </MenuItem>
 
-                    <MenuItem onClick={() => handleDeleteItem(row.entityType, row.id)} sx={{ color: 'error.main' }}>
+                    {/* <MenuItem onClick={() => handleDeleteItem(row.entityType, row.id)} sx={{ color: 'error.main' }}>
                         <Iconify icon="solar:trash-bin-trash-bold" />
                         Delete
-                    </MenuItem>
+                    </MenuItem> */}
                     {row.status !== 'Deactivated' ? (
                         <MenuItem onClick={() => handleAccStatus(row.id)} sx={{ color: 'error.main' }}>
                             <Iconify icon="mdi-light:cancel" />

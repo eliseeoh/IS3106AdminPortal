@@ -78,17 +78,18 @@ export function DashboardLayout({ sx, children, header }: DashboardLayoutProps) 
             ),
             rightArea: (
               <Box gap={1} display="flex" alignItems="center">
+
                 <AccountPopover
                   data={[
                     {
                       label: 'Home',
-                      href: '/',
+                      href: '/home',
                       icon: <Iconify width={22} icon="solar:home-angle-bold-duotone" />,
                     },
                     {
                       label: 'Profile',
                       href: '/profile',
-                      icon: <Iconify width={22} icon="solar:shield-keyhole-bold-duotone" />,
+                      icon: <Iconify width={22} icon="solar:user-circle-bold-duotone" />,
                     },
                   ]}
                 />

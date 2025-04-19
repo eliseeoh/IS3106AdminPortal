@@ -10,9 +10,10 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import InputAdornment from '@mui/material/InputAdornment';
 
 import { useRouter } from 'src/routes/hooks';
-
 import { Iconify } from 'src/components/iconify';
 import Api from 'src/helpers/Api';
+import ChangePasswordDialog from './changePasswordDialog';
+
 
 // ----------------------------------------------------------------------
 
@@ -22,6 +23,7 @@ export function SignInView() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [open, setOpen] = useState(false);
 
   const handleSignIn = () => {
 
@@ -55,7 +57,7 @@ export function SignInView() {
         sx={{ mb: 3 }}
       />
 
-      <Link variant="body2" color="inherit" sx={{ mb: 1.5 }}>
+      <Link variant="body2" color="inherit" sx={{ mb: 1.5 }} onClick={() => setOpen(true)}>
         Forgot password?
       </Link>
 
@@ -103,6 +105,7 @@ export function SignInView() {
 
       {renderForm}
 
+      <ChangePasswordDialog open={open} handleClose={() => setOpen(false)} />
     </>
   );
 }

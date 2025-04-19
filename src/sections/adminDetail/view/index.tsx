@@ -5,7 +5,7 @@ import Grid from '@mui/material/Unstable_Grid2';
 import Pagination from '@mui/material/Pagination';
 import Typography from '@mui/material/Typography';
 import { DashboardContent } from 'src/layouts/dashboard';
-import { Button, Card, TextField } from '@mui/material';
+import { Button, Card, MenuItem, Select, SelectChangeEvent, TextField } from '@mui/material';
 import EditIconSVG from 'src/components/editIconSVG';
 import { useParams } from 'react-router-dom';
 import Api, { address } from 'src/helpers/Api';
@@ -35,6 +35,7 @@ export function AdminDetailView() {
     const [isEditPage, setEditPage] = useState(false);
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
     const [profileImage, setProfileImage] = useState<File | null>(null);
+    const [isAdmin, setIsAdmin] = useState(false);
 
     const fetchProfileData = useCallback(() => {
         Api.getProfileById(adminId)
@@ -44,6 +45,7 @@ export function AdminDetailView() {
             })
             .then((json) => {
                 setData(json);
+                setIsAdmin(json.role === "admin")
                 console.log("Profile data fetched successfully:", json);
             })
             .catch((error) => {
@@ -62,7 +64,7 @@ export function AdminDetailView() {
     }
 
     const handleSaveDetail = () => {
-        Api.updateProfile(updateData, profileImage).then((res) => {
+        Api.updateProfile(updateData, profileImage, adminId).then((res) => {
             if (res.status === 404) {
                 throw new Error("Unauthorized");
             }
@@ -76,6 +78,11 @@ export function AdminDetailView() {
     const handleDisableAccount = () => {
         // Disable account
     }
+
+    const handleRoleChange = (event: SelectChangeEvent) => {
+        setIsAdmin(event.target.value === "admin");
+        insertUpdateData("role", event.target.value.toLowerCase());
+    };
 
     const changeProfilePicture = () => {
         // Change profile picture
@@ -142,16 +149,17 @@ export function AdminDetailView() {
                                     </div>) : (<div style={{ fontSize: 16, color: '#617A8A' }}>{data.appointment}</div>)}
                                     {isEditPage ? (<div>
                                         <Typography variant='subtitle2'>Role</Typography>
-                                        <TextField
-                                            fullWidth
-                                            name="role"
-                                            label=""
-                                            defaultValue={data.role}
-                                            InputLabelProps={{ shrink: true }}
-                                            sx={{ mb: 3, mt: 1 }}
-                                            onChange={(e) => insertUpdateData("role", e.target.value)}
-                                        />
-                                    </div>) : (<div style={{ fontSize: 16, color: '#617A8A' }}>{data.role}</div>)}
+                                        <Select
+                                            labelId="demo-select-small-label"
+                                            id="demo-select-small"
+                                            value={isAdmin ? "admin" : "manager"}
+                                            label="role"
+                                            onChange={handleRoleChange}
+                                        >
+                                            <MenuItem value="admin">Admin</MenuItem>
+                                            <MenuItem value="manager">Manager</MenuItem>
+                                        </Select>
+                                    </div>) : (<div style={{ fontSize: 16, color: '#617A8A' }}>{data.role.charAt(0).toUpperCase() + data.role.slice(1)}</div>)}
 
                                 </div>
                             </div>
@@ -240,7 +248,7 @@ export function AdminDetailView() {
                                     />
                                 </div>) : (<div style={{ fontSize: 14 }}>{data.email}</div>)}
                             </div>
-                            <div style={{ flex: 1 }}>
+                            {/* <div style={{ flex: 1 }}>
                                 <div style={{ fontSize: 14, color: '#617A8A' }}>Password</div>
                                 {isEditPage ? (<div>
                                     <TextField
@@ -253,7 +261,7 @@ export function AdminDetailView() {
                                         sx={{ mb: 3, mt: 1 }}
                                     />
                                 </div>) : (<div style={{ fontSize: 14 }}>{data.password}</div>)}
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                     <div style={{ width: '100%', padding: 16, display: 'flex', gap: 15 }}>

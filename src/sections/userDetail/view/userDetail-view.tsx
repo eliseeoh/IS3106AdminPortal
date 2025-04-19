@@ -256,7 +256,7 @@ export function UserDetailView({ profile, handleFetchProfile }: { profile: any, 
                   />
                 </div>) : (<div style={{ fontSize: 14 }}>{profile.email}</div>)}
               </div>
-              <div style={{ flex: 1 }}>
+              {/* <div style={{ flex: 1 }}>
                 <div style={{ fontSize: 14, color: '#617A8A' }}>Password</div>
                 {isEditPage ? (<div>
                   <TextField
@@ -269,7 +269,7 @@ export function UserDetailView({ profile, handleFetchProfile }: { profile: any, 
                     onChange={(e) => insertUpdateData("password", e.target.value)}
                   />
                 </div>) : (<div style={{ fontSize: 14 }}>{profile.password}</div>)}
-              </div>
+              </div> */}
             </div>
           </div>
           <div style={{ width: '100%', padding: 16, display: 'flex', gap: 15 }}>

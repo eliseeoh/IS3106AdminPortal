@@ -1,7 +1,7 @@
 import type { IconButtonProps } from '@mui/material/IconButton';
 
-import { useState, useCallback } from 'react';
-
+import { useState, useCallback, useEffect } from 'react';
+import Api from "src/helpers/Api";
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Avatar from '@mui/material/Avatar';
@@ -13,8 +13,6 @@ import IconButton from '@mui/material/IconButton';
 import MenuItem, { menuItemClasses } from '@mui/material/MenuItem';
 
 import { useRouter, usePathname } from 'src/routes/hooks';
-
-import { _myAccount } from 'src/_mock';
 
 // ----------------------------------------------------------------------
 
@@ -31,8 +29,25 @@ export function AccountPopover({ data = [], sx, ...other }: AccountPopoverProps)
   const router = useRouter();
 
   const pathname = usePathname();
-
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [profileImage, setProfileImage] = useState("");
   const [openPopover, setOpenPopover] = useState<HTMLButtonElement | null>(null);
+
+  useEffect(() => {
+    Api.getProfile().then((response) => {
+      if (!response.ok) throw new Error("Failed to fetch profile");
+      return response.json();
+    }
+    ).then((admin) => {
+      setName(admin.name);
+      setEmail(admin.email);
+      setProfileImage(`http://localhost:3000/${admin.profilePicture}`);
+    }).catch((error) => {
+      console.error("Error:", error);
+
+    });
+  }, [router]);
 
   const handleOpenPopover = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
     setOpenPopover(event.currentTarget);
@@ -69,8 +84,10 @@ export function AccountPopover({ data = [], sx, ...other }: AccountPopoverProps)
         }}
         {...other}
       >
-        <Avatar src={_myAccount.photoURL} alt={_myAccount.displayName} sx={{ width: 1, height: 1 }}>
-          {_myAccount.displayName.charAt(0).toUpperCase()}
+        <Avatar src={profileImage !== "" ? profileImage : "/assets/defaultProfile.jpg"}
+          alt={name}
+          sx={{ width: 1, height: 1 }}>
+          {name.charAt(0).toUpperCase()}
         </Avatar>
       </IconButton>
 
@@ -88,11 +105,11 @@ export function AccountPopover({ data = [], sx, ...other }: AccountPopoverProps)
       >
         <Box sx={{ p: 2, pb: 1.5 }}>
           <Typography variant="subtitle2" noWrap>
-            {_myAccount?.displayName}
+            {name}
           </Typography>
 
           <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-            {_myAccount?.email}
+            {email}
           </Typography>
         </Box>
 
