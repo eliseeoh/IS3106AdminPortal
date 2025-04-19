@@ -218,7 +218,7 @@ export function BusinessDetailView({ profile, handleFetchProfile }: { profile: P
               </div>
               <div style={{ flex: 1 }}>
                 <div style={{ fontSize: 14, color: '#617A8A' }}>Status</div>
-                <div style={{ fontSize: 14 }}>{profile.status ? "Valid ✅" : "Invalid ❌"}</div>
+                <div style={{ fontSize: 14 }}>{profile.status ? "Valid" : "Invalid"}</div>
               </div>
             </div>
             <div style={{ display: 'flex', borderTop: '1px solid #E5E8EB', padding: 16 }}>
@@ -314,6 +314,7 @@ export function BusinessDetailView({ profile, handleFetchProfile }: { profile: P
                 </div>) : (<div style={{ fontSize: 14 }}>{profile.isOperational ? "Running" : "Permanently Closed"}</div>)}
               </div>
             </div>
+
           </div>
           <div style={{ width: '100%', padding: 16, display: 'flex', gap: 15 }}>
             {!isEditPage ? (
