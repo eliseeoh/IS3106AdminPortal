@@ -1,14 +1,15 @@
 import { useState, useEffect } from 'react';
-
 import Typography from '@mui/material/Typography';
 import { DashboardContent } from 'src/layouts/dashboard';
 import { Button, Card, TextField } from '@mui/material';
 import EditIconSVG from 'src/components/editIconSVG';
 import Api, { address } from 'src/helpers/Api';
-
+import { useRouter } from 'src/routes/hooks';
+import ChangePasswordDialog from '../changePasswordDialog';
 // ----------------------------------------------------------------------
 
 export function ProfileView() {
+    const Router = useRouter();
     const dataPrep = {
         name: "Stacy Lee",
         age: 25,
@@ -29,6 +30,15 @@ export function ProfileView() {
     const [isEditPage, setEditPage] = useState(false);
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
     const [profileImage, setProfileImage] = useState<File | null>(null);
+    const [open, setOpen] = useState(false);
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
 
     useEffect(() => {
         fetchProfileData();
@@ -69,7 +79,19 @@ export function ProfileView() {
     }
 
     const handleDisableAccount = () => {
-        // Disable account
+        Api.disableAccount()
+            .then((res) => { 
+                if (res.ok ) {
+                    Router.push('/sign-in');
+                }
+                else {
+                    throw new Error("Failed to disable account");
+                }
+            })
+            .catch((error) => {
+                console.error(error.message);
+                alert(error.message); // Optionally show an alert to the user
+            });
     }
 
     const changeProfilePicture = () => {
@@ -222,31 +244,7 @@ export function ProfileView() {
                         <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid #E5E8EB', padding: 16 }}>
                             <div style={{ flex: 1, paddingRight: 16 }}>
                                 <div style={{ fontSize: 14, color: '#617A8A' }}>Email</div>
-                                {isEditPage ? (<div>
-                                    <TextField
-                                        fullWidth
-                                        name="email"
-                                        label=""
-                                        defaultValue={data.email}
-                                        InputLabelProps={{ shrink: true }}
-                                        onChange={(e) => insertUpdateData("email", e.target.value)}
-                                        sx={{ mb: 3, mt: 1 }}
-                                    />
-                                </div>) : (<div style={{ fontSize: 14 }}>{data.email}</div>)}
-                            </div>
-                            <div style={{ flex: 1 }}>
-                                <div style={{ fontSize: 14, color: '#617A8A' }}>Password</div>
-                                {isEditPage ? (<div>
-                                    <TextField
-                                        fullWidth
-                                        name="password"
-                                        label=""
-                                        defaultValue={data.password}
-                                        InputLabelProps={{ shrink: true }}
-                                        onChange={(e) => insertUpdateData("password", e.target.value)}
-                                        sx={{ mb: 3, mt: 1 }}
-                                    />
-                                </div>) : (<div style={{ fontSize: 14 }}>{data.password}</div>)}
+                                <div style={{ fontSize: 14 }}>{data.email}</div>
                             </div>
                         </div>
                     </div>
@@ -255,6 +253,9 @@ export function ProfileView() {
                             <>
                                 <Button onClick={() => setEditPage(true)} variant="contained" color="primary" style={{ padding: '12px 24px', borderRadius: 8, textTransform: 'none' }}>
                                     <div style={{ fontSize: 14, fontWeight: '700' }}>Edit Admin Details</div>
+                                </Button>
+                                <Button onClick={handleClickOpen} variant="contained" color="info" style={{ padding: '12px 24px', borderRadius: 8, textTransform: 'none' }}>
+                                    <div style={{ fontSize: 14, fontWeight: '700' }}>Change Password</div>
                                 </Button>
                                 <Button onClick={handleDisableAccount} variant="contained" color="secondary" style={{ padding: '12px 24px', borderRadius: 8, textTransform: 'none' }}>
                                     <div style={{ fontSize: 14, fontWeight: '700' }}>Disable Account</div>
@@ -270,11 +271,10 @@ export function ProfileView() {
                                 </Button>
                             </>
                         )}
-
-
                     </div>
                 </div>
             </Card>
+            <ChangePasswordDialog open={open} handleClose={handleClose} />
         </DashboardContent>
     );
 }

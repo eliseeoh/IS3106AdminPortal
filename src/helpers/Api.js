@@ -210,6 +210,49 @@ const Api = {
                 "authorization": `Bearer ${localStorage.getItem("accesstoken")}`,
             }
         });
+    },
+    changePassword(oldPassword, newPassword) {
+        return fetch(`${address}/api/admins/changePassword`, {
+            method: "PUT",
+            headers: {
+                "authorization": `Bearer ${localStorage.getItem("accesstoken")}`,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ oldPassword, newPassword }),
+        });
+    },
+    createAdmin(formData) {
+        return fetch(`${address}/api/admins`, {
+            method: "POST",
+            headers: {
+                "authorization": `Bearer ${localStorage.getItem("accesstoken")}`,
+            },
+            body: formData,
+        });
+    },
+    deleteAdmin(adminId) {
+        return fetch(`${address}/api/admins/${adminId}`, {
+            method: "DELETE",
+            headers: {
+                "authorization": `Bearer ${localStorage.getItem("accesstoken")}`, 
+            },
+        });
+    },
+    disableAccount() {
+        return fetch(`${address}/api/admins/disable`, {
+            method: "PUT",
+            headers: {
+                "authorization": `Bearer ${localStorage.getItem("accesstoken")}`,
+            },
+        });
+    },
+    changeAccStatus(adminId) {
+        return fetch(`${address}/api/admins/changeStatus/${adminId}`, {
+            method: "PUT",
+            headers: {
+                "authorization": `Bearer ${localStorage.getItem("accesstoken")}`,
+            },
+        });
     }
 }
 
