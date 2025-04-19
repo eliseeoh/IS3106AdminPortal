@@ -12,6 +12,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import { useRouter } from 'src/routes/hooks';
 
 import { Iconify } from 'src/components/iconify';
+import Api from 'src/helpers/Api';
 
 // ----------------------------------------------------------------------
 
@@ -23,14 +24,8 @@ export function SignInView() {
   const [password, setPassword] = useState('');
 
   const handleSignIn = () => {
-    fetch("http://localhost:3000/api/admins/login", {
-      body: JSON.stringify({
-        email,
-        password,
-      }),
-      headers: { "Content-Type": "application/json" },
-      method: "POST",
-    })
+
+    Api.signIn(email, password)
       .then((res) => {
         if (res.status === 401) {
           throw new Error("Unauthorized: Invalid email or password");
@@ -39,12 +34,12 @@ export function SignInView() {
       })
       .then((json) => {
         localStorage.setItem("accesstoken", json.accessToken);
-        router.push('/home');
+        router.push("/home");
         console.log("Login successful:", json);
       })
       .catch((error) => {
         console.error(error.message);
-        alert(error.message); // Optionally show an alert to the user
+        alert(error.message);
       });
   };
 

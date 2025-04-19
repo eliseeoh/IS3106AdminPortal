@@ -22,6 +22,7 @@ import FormControl from '@mui/material/FormControl';
 import { Iconify } from 'src/components/iconify';
 import { red } from '@mui/material/colors';
 import { useRouter } from 'src/routes/hooks';
+import Api from 'src/helpers/Api';
 
 // ----------------------------------------------------------------------
 
@@ -53,19 +54,13 @@ export function UserTableToolbar({ selected, filterName, onFilterName, onFilterS
 	const confirmCancel = async () => {
 		try {
 			const cancelPromises = selected.map((bookingId) =>
-				fetch(`http://localhost:3000/api/bookings/cancel/${bookingId}`, {
-					method: 'PATCH',
-					headers: {
-						'Content-Type': 'application/json',
-						Authorization: `Bearer ${localStorage.getItem('token')}`,
-					},
-				}).then(async (response) => {
-					if (!response.ok) {
-						const errorText = await response.text();
-						throw new Error(`Failed to cancel ${bookingId}: ${errorText}`);
-					}
+				Api.cancelBooking(bookingId).then(async (response) => {
+				  if (!response.ok) {
+					const errorText = await response.text();
+					throw new Error(`Failed to cancel ${bookingId}: ${errorText}`);
+				  }
 				})
-			);
+			  );
 
 			await Promise.all(cancelPromises);
 

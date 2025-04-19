@@ -253,8 +253,28 @@ const Api = {
                 "authorization": `Bearer ${localStorage.getItem("accesstoken")}`,
             },
         });
-    }
-}
+    },
+
+    cancelBooking (bookingId) {
+        return fetch(`${address}/api/bookings/cancel/${bookingId}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+      },
+
+    signIn(email, password) {
+        return fetch(`${address}/api/admins/login`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        });
+      },
+    
+};
+
 
 export default Api;
 export { address };

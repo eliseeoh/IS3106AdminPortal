@@ -101,7 +101,7 @@ export function UserDetailView({ profile, handleFetchProfile }: { profile: any, 
   }
 
   const changeProfilePicture = () => {
-    // Change profile picture
+    
   }
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -109,11 +109,10 @@ export function UserDetailView({ profile, handleFetchProfile }: { profile: any, 
     if (!file) return;
 
     setProfileImage(file);
-    // Create a URL for preview
+
     const imageUrl = URL.createObjectURL(file);
     setSelectedImage(imageUrl);
 
-    // Here, you can also upload the image to an API
 
   };
 
