@@ -218,7 +218,7 @@ export function BusinessDetailView({ profile, handleFetchProfile }: { profile: P
               </div>
               <div style={{ flex: 1 }}>
                 <div style={{ fontSize: 14, color: '#617A8A' }}>Status</div>
-                <div style={{ fontSize: 14 }}>{profile.status ? "Valid ✅" : "Invalid ❌"}</div>
+                <div style={{ fontSize: 14 }}>{profile.status ? "Valid" : "Invalid"}</div>
               </div>
             </div>
             <div style={{ display: 'flex', borderTop: '1px solid #E5E8EB', padding: 16 }}>
@@ -280,7 +280,7 @@ export function BusinessDetailView({ profile, handleFetchProfile }: { profile: P
                     onChange={(e) => insertUpdateData("website", e.target.value)}
                   />
                 </div>) : (<div style={{ fontSize: 14 }}>
-                  <a href={`https://${profile.website}`} target="_blank" rel="noopener noreferrer">{profile.website}</a></div>)}
+                  <a href={`https://${profile.website}`} target="_blank" rel="noopener noreferrer">{profile.website.length > 40 ? `${profile.website.substring(0, 40)}...` : profile.website}</a></div>)}
               </div>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid #E5E8EB', padding: 16 }}>
@@ -299,22 +299,6 @@ export function BusinessDetailView({ profile, handleFetchProfile }: { profile: P
                 </div>) : (<div style={{ fontSize: 14 }}>{profile.email}</div>)}
               </div>
               <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 14, color: '#617A8A' }}>Password</div>
-                {isEditPage ? (<div>
-                  <TextField
-                    fullWidth
-                    name="password"
-                    label=""
-                    defaultValue={profile.password}
-                    InputLabelProps={{ shrink: true }}
-                    sx={{ mb: 3, mt: 1 }}
-                    onChange={(e) => insertUpdateData("password", e.target.value)}
-                  />
-                </div>) : (<div style={{ fontSize: 14 }}>{profile.password}</div>)}
-              </div>
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid #E5E8EB', padding: 16 }}>
-              <div style={{ flex: 1, paddingRight: 16 }}>
                 <div style={{ fontSize: 14, color: '#617A8A' }}>Operational Status</div>
                 {isEditPage ? (<div>
                   <Select
@@ -330,6 +314,7 @@ export function BusinessDetailView({ profile, handleFetchProfile }: { profile: P
                 </div>) : (<div style={{ fontSize: 14 }}>{profile.isOperational ? "Running" : "Permanently Closed"}</div>)}
               </div>
             </div>
+
           </div>
           <div style={{ width: '100%', padding: 16, display: 'flex', gap: 15 }}>
             {!isEditPage ? (
