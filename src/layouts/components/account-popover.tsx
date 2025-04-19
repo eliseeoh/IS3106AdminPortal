@@ -14,8 +14,7 @@ import MenuItem, { menuItemClasses } from '@mui/material/MenuItem';
 
 import { useRouter, usePathname } from 'src/routes/hooks';
 
-import { _myAccount } from 'src/_mock';
-import { set } from 'date-fns';
+
 
 // ----------------------------------------------------------------------
 
@@ -45,7 +44,7 @@ export function AccountPopover({ data = [], sx, ...other }: AccountPopoverProps)
     ).then((admin) => {
       setName(admin.name);
       setEmail(admin.email);
-      setProfileImage(admin.profilePicture);
+      setProfileImage(`http://localhost:3000/${admin.profilePicture}`);
     }).catch((error) => {
       console.error("Error:", error);
 
@@ -87,7 +86,9 @@ export function AccountPopover({ data = [], sx, ...other }: AccountPopoverProps)
         }}
         {...other}
       >
-        <Avatar src={_myAccount.photoURL} alt={_myAccount.displayName} sx={{ width: 1, height: 1 }}>
+        <Avatar src={profileImage !== "" ? profileImage : "/assets/defaultProfile.jpg"}
+          alt={name}
+          sx={{ width: 1, height: 1 }}>
           {name.charAt(0).toUpperCase()}
         </Avatar>
       </IconButton>
