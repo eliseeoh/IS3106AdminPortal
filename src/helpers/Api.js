@@ -1,14 +1,14 @@
 const address = "http://localhost:3000";
 
 const Api = {
-    updateProfile(updateData, profileImage) {
+    updateProfile(updateData, profileImage, adminId) {
         const formData = new FormData();
         formData.append("profileImage", profileImage);
         Object.keys(updateData).forEach(key => {
             formData.append(key, updateData[key]);
         });
 
-        return fetch(`${address}/api/admins/profile`, {
+        return fetch(`${address}/api/admins/profile/${adminId}`, {
             headers: {
                 "authorization": `Bearer ${localStorage.getItem("accesstoken")}`,
             },
@@ -234,7 +234,7 @@ const Api = {
         return fetch(`${address}/api/admins/${adminId}`, {
             method: "DELETE",
             headers: {
-                "authorization": `Bearer ${localStorage.getItem("accesstoken")}`, 
+                "authorization": `Bearer ${localStorage.getItem("accesstoken")}`,
             },
         });
     },
@@ -252,6 +252,16 @@ const Api = {
             headers: {
                 "authorization": `Bearer ${localStorage.getItem("accesstoken")}`,
             },
+        });
+    },
+    forgetPassword(email) {
+        return fetch(`${address}/api/admins/forgetPassword`, {
+            method: "PUT",
+            headers: {
+                "authorization": `Bearer ${localStorage.getItem("accesstoken")}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ email })
         });
     }
 }
