@@ -55,12 +55,12 @@ export function UserTableToolbar({ selected, filterName, onFilterName, onFilterS
 		try {
 			const cancelPromises = selected.map((bookingId) =>
 				Api.cancelBooking(bookingId).then(async (response) => {
-				  if (!response.ok) {
-					const errorText = await response.text();
-					throw new Error(`Failed to cancel ${bookingId}: ${errorText}`);
-				  }
+					if (!response.ok) {
+						const errorText = await response.text();
+						throw new Error(`Failed to cancel ${bookingId}: ${errorText}`);
+					}
 				})
-			  );
+			);
 
 			await Promise.all(cancelPromises);
 
@@ -118,7 +118,7 @@ export function UserTableToolbar({ selected, filterName, onFilterName, onFilterS
 					fullWidth
 					value={filterName}
 					onChange={onFilterName}
-					placeholder="Search user..."
+					placeholder="Search businesses..."
 					startAdornment={
 						<InputAdornment position="start">
 							<Iconify width={20} icon="eva:search-fill" sx={{ color: 'text.disabled' }} />

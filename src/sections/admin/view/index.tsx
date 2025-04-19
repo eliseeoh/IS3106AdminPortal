@@ -57,12 +57,33 @@ export function AdminView() {
     const [snackbarMessage, setSnackbarMessage] = useState("");
     const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">("success");
 
+    const [profile, setProfile] = useState<{ role: string } | null>(null);
+
+    const fetchProfileData = () => {
+        Api.getProfile()
+            .then((res) => {
+                if (res.status === 404) {
+                    throw new Error("Unauthorized");
+                }
+                return res.json();
+            })
+            .then((json) => {
+                setProfile(json);
+                console.log("Profile data fetched successfully:", json);
+            })
+            .catch((error) => {
+                console.error(error.message);
+                alert(error.message); // Optionally show an alert to the user
+            });
+    };
+
 
     // TO-DO: fetch data from API
     const _admin = renameKeys(initialData);
 
     useEffect(() => {
         fetchAdminsData();
+        fetchProfileData();
     }, []);
 
     async function fetchAdminsData() {
@@ -94,7 +115,7 @@ export function AdminView() {
                 <Typography variant="h4" flexGrow={1}>
                     Admins
                 </Typography>
-                <Button
+                {profile && profile.role === "manager" && (<Button
                     variant="contained"
                     startIcon={<Iconify icon="eva:plus-fill" />}
                     onClick={() => {
@@ -103,7 +124,8 @@ export function AdminView() {
                     }
                 >
                     New Admin
-                </Button>
+                </Button>)}
+
             </Box>
 
             <Card>

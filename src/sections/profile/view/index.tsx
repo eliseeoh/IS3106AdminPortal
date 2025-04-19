@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import Typography from '@mui/material/Typography';
 import { DashboardContent } from 'src/layouts/dashboard';
-import { Button, Card, TextField } from '@mui/material';
+import { Button, Card, MenuItem, Select, SelectChangeEvent, TextField } from '@mui/material';
 import EditIconSVG from 'src/components/editIconSVG';
 import Api, { address } from 'src/helpers/Api';
 import { useRouter } from 'src/routes/hooks';
@@ -32,6 +32,12 @@ export function ProfileView() {
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
     const [profileImage, setProfileImage] = useState<File | null>(null);
     const [open, setOpen] = useState(false);
+    const [isAdmin, setIsAdmin] = useState(false);
+
+    const handleRoleChange = (event: SelectChangeEvent) => {
+        setIsAdmin(event.target.value === "admin");
+        insertUpdateData("role", event.target.value.toLowerCase());
+    };
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -157,18 +163,7 @@ export function ProfileView() {
                                             sx={{ mb: 3, mt: 1 }}
                                         />
                                     </div>) : (<div style={{ fontSize: 16, color: '#617A8A' }}>{data.appointment}</div>)}
-                                    {isEditPage ? (<div>
-                                        <Typography variant='subtitle2'>Role</Typography>
-                                        <TextField
-                                            fullWidth
-                                            name="role"
-                                            label=""
-                                            defaultValue={data.role}
-                                            InputLabelProps={{ shrink: true }}
-                                            onChange={(e) => insertUpdateData("role", e.target.value)}
-                                            sx={{ mb: 3, mt: 1 }}
-                                        />
-                                    </div>) : (<div style={{ fontSize: 16, color: '#617A8A' }}>{data.role}</div>)}
+                                    <div style={{ fontSize: 16, color: '#617A8A' }}>{data.role.charAt(0).toUpperCase() + data.role.slice(1)}</div>
 
                                 </div>
                             </div>
