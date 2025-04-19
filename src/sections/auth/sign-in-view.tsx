@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 
+import { Alert, Snackbar } from '@mui/material';
 import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
 import Divider from '@mui/material/Divider';
@@ -15,6 +16,7 @@ import Api from 'src/helpers/Api';
 import ChangePasswordDialog from './changePasswordDialog';
 
 
+
 // ----------------------------------------------------------------------
 
 export function SignInView() {
@@ -25,23 +27,32 @@ export function SignInView() {
   const [password, setPassword] = useState('');
   const [open, setOpen] = useState(false);
 
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">("success");
+
   const handleSignIn = () => {
 
     Api.signIn(email, password)
       .then((res) => {
-        if (res.status === 401) {
+        if (!res.ok) {
+          setSnackbarMessage("Invalid credentials");
+          setSnackbarSeverity("error");
+          setOpenSnackbar(true);
           throw new Error("Unauthorized: Invalid email or password");
         }
         return res.json();
       })
       .then((json) => {
+        setSnackbarMessage("Login successful");
+        setSnackbarSeverity("success");
+        setOpenSnackbar(true);
         localStorage.setItem("accesstoken", json.accessToken);
         router.push("/home");
         console.log("Login successful:", json);
       })
       .catch((error) => {
         console.error(error.message);
-        alert(error.message);
       });
   };
 
@@ -102,6 +113,17 @@ export function SignInView() {
           Don’t have an account? Request from your manager.
         </Typography>
       </Box>
+
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={3000}
+        onClose={() => setOpenSnackbar(false)}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert severity={snackbarSeverity} onClose={() => setOpenSnackbar(false)}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
 
       {renderForm}
 
