@@ -3,6 +3,7 @@ import { useState, useCallback, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Table from '@mui/material/Table';
+import { Snackbar, Alert } from '@mui/material';
 import Button from '@mui/material/Button';
 import TableBody from '@mui/material/TableBody';
 import Typography from '@mui/material/Typography';
@@ -52,6 +53,10 @@ export function AdminView() {
 
     const [filterName, setFilterName] = useState('');
     const [initialData, setInitialData] = useState([]);
+    const [openSnackbar, setOpenSnackbar] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState("");
+    const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">("success");
+
 
     // TO-DO: fetch data from API
     const _admin = renameKeys(initialData);
@@ -68,7 +73,6 @@ export function AdminView() {
                 }
                 return new Error('Failed to fetch admins data');
             }).then((data) => {
-                console.log(data);
                 setInitialData(data);
             })
             .catch((error) => {
@@ -150,6 +154,9 @@ export function AdminView() {
                                             row={row}
                                             selected={table.selected.includes(row.id)}
                                             onSelectRow={() => table.onSelectRow(row.id)}
+                                            setSnackbarMessage={setSnackbarMessage}
+                                            setSnackbarSeverity={setSnackbarSeverity}
+                                            setOpenSnackbar={setOpenSnackbar}
                                         />
                                     ))}
 
@@ -174,6 +181,16 @@ export function AdminView() {
                     onRowsPerPageChange={table.onChangeRowsPerPage}
                 />
             </Card>
+            <Snackbar
+                open={openSnackbar}
+                autoHideDuration={3000}
+                onClose={() => setOpenSnackbar(false)}
+                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+            >
+                <Alert severity={snackbarSeverity} onClose={() => setOpenSnackbar(false)}>
+                    {snackbarMessage}
+                </Alert>
+            </Snackbar>
         </DashboardContent>
     );
 }

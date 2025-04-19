@@ -2,6 +2,8 @@ import { useState, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 import Popover from '@mui/material/Popover';
 import TableRow from '@mui/material/TableRow';
 import Checkbox from '@mui/material/Checkbox';
@@ -22,11 +24,16 @@ type UserTableRowProps = {
     row: AdminProps;
     selected: boolean;
     onSelectRow: () => void;
+    setSnackbarMessage: (message: string) => void;
+    setSnackbarSeverity: (severity: "success" | "error") => void;
+    setOpenSnackbar: (open: boolean) => void;
 };
 
-export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) {
+export function UserTableRow({ row, selected, onSelectRow 
+    , setSnackbarMessage, setSnackbarSeverity, 
+    setOpenSnackbar
+}: UserTableRowProps) {
 
-    console.log(row);
     const router = useRouter();
 
     const [openPopover, setOpenPopover] = useState<HTMLButtonElement | null>(null);
@@ -53,37 +60,63 @@ export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) 
         [handleClosePopover, router]
     );
 
+    const handleAccStatus = useCallback(
+        (path: string) => {
+            console.log(`Changing status of admin with ID: ${path}`);
+            handleClosePopover();
+            Api.changeAccStatus(path)
+                .then((response) => {
+                    if (response.ok) {
+                        router.refresh();
+                        setSnackbarMessage('Admin status updated successfully');
+                        setSnackbarSeverity("error");
+                        setOpenSnackbar(true);
+                    }
+                    else if (response.status === 403) {
+                        setSnackbarMessage('You do not have permission to update this admin.');
+                        setSnackbarSeverity("error");
+                        setOpenSnackbar(true);
+                    } else {
+                        setSnackbarMessage('Failed to update admin status:');
+                        setSnackbarSeverity("error");
+                        setOpenSnackbar(true);
+                    }
+                }
+                )
+                .catch((error) => {
+                    console.error('Error updating admin status:', error);
+                });
+        }, [handleClosePopover, router, setSnackbarMessage, setSnackbarSeverity, setOpenSnackbar]);
+
     const handleDeleteItem = useCallback(
         (entityType: String, path: string) => {
-          console.log(`Deleting ${entityType} with ID: ${path}`);
-          handleClosePopover();
-          if (entityType === "user") {
-            // router.push(`/user/${path}/delete`);
-          }
-          else if (entityType === "business") {
-            // router.push(`/business/${path}/delete`);
-          }
-          else {
-            console.log(`Deleting admin with ID: ${path}`);
-            Api.deleteAdmin(path)
-              .then((response) => {
-                if (response.ok) {
-                  router.refresh();
-                  console.log('Admin deleted successfully');
-                } else if (response.status === 403) {
-                  console.log('You do not have permission to delete this admin.');
-                } else {
-                  console.error('Failed to delete admin:', response.statusText);
-                }
-                
-              })
-              .catch((error) => {
-                console.error('Error deleting admin:', error);
-              });
-          }
+            handleClosePopover();
+            if (entityType === "user") {
+                // router.push(`/user/${path}/delete`);
+            }
+            else if (entityType === "business") {
+                // router.push(`/business/${path}/delete`);
+            }
+            else {
+                Api.deleteAdmin(path)
+                    .then((response) => {
+                        if (response.ok) {
+                            router.refresh();
+                            console.log('Admin deleted successfully');
+                        } else if (response.status === 403) {
+                            console.log('You do not have permission to delete this admin.');
+                        } else {
+                            console.error('Failed to delete admin:', response.statusText);
+                        }
+
+                    })
+                    .catch((error) => {
+                        console.error('Error deleting admin:', error);
+                    });
+            }
         }
         , [handleClosePopover, router]
-      );
+    );
 
     return (
         <>
@@ -108,8 +141,8 @@ export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) 
                         row.status === 'Created'
                             ? 'warning'
                             : row.status === 'Deactivated'
-                            ? 'error'
-                            : 'success'
+                                ? 'error'
+                                : 'success'
                     }>{row.status}</Label>
                 </TableCell>
 
@@ -152,6 +185,17 @@ export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) 
                         <Iconify icon="solar:trash-bin-trash-bold" />
                         Delete
                     </MenuItem>
+                    {row.status !== 'Deactivated' ? (
+                        <MenuItem onClick={() => handleAccStatus(row.id)} sx={{ color: 'error.main' }}>
+                            <Iconify icon="mdi-light:cancel" />
+                            Deactivate
+                        </MenuItem>
+                    ) : (
+                        <MenuItem onClick={() => handleAccStatus(row.id)} sx={{ color: 'success.main' }}>
+                            <Iconify icon="mdi-light:check" />
+                            Activate
+                        </MenuItem>
+                    )}
                 </MenuList>
             </Popover>
         </>

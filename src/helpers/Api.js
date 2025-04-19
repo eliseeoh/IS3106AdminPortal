@@ -245,6 +245,14 @@ const Api = {
                 "authorization": `Bearer ${localStorage.getItem("accesstoken")}`,
             },
         });
+    },
+    changeAccStatus(adminId) {
+        return fetch(`${address}/api/admins/changeStatus/${adminId}`, {
+            method: "PUT",
+            headers: {
+                "authorization": `Bearer ${localStorage.getItem("accesstoken")}`,
+            },
+        });
     }
 }
 
