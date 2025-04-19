@@ -9,7 +9,7 @@ export default function AdminDetailPage() {
   return (
     <>
       <Helmet>
-        <title> {`Users - ${CONFIG.appName}`}</title>
+        <title> {`Admins - ${CONFIG.appName}`}</title>
       </Helmet>
 
       <AdminView />
