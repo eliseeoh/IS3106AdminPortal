@@ -35,7 +35,6 @@ export default function ChangePasswordDialog({ open, handleClose }: ChangePasswo
                     setOpenSnackbar(true);
                     setIsLoading(false);
                     handleClose();
-                    router.refresh();
                 }
                 else {
                     setSnackbarMessage("Failed to Reset Password");

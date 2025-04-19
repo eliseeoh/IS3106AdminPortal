@@ -277,7 +277,6 @@ const Api = {
         return fetch(`${address}/api/admins/forgetPassword`, {
             method: "PUT",
             headers: {
-                "authorization": `Bearer ${localStorage.getItem("accesstoken")}`,
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({ email })
