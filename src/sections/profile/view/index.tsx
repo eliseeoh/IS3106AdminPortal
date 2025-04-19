@@ -11,6 +11,7 @@ import ChangePasswordDialog from '../changePasswordDialog';
 export function ProfileView() {
     const Router = useRouter();
     const dataPrep = {
+        _id: "dsa",
         name: "Stacy Lee",
         age: 25,
         status: true,
@@ -67,7 +68,7 @@ export function ProfileView() {
     };
 
     const handleSaveDetail = () => {
-        Api.updateProfile(updateData, profileImage).then((res) => {
+        Api.updateProfile(updateData, profileImage, data._id).then((res) => {
             if (res.status === 404) {
                 throw new Error("Unauthorized");
             }
@@ -80,8 +81,8 @@ export function ProfileView() {
 
     const handleDisableAccount = () => {
         Api.disableAccount()
-            .then((res) => { 
-                if (res.ok ) {
+            .then((res) => {
+                if (res.ok) {
                     Router.push('/sign-in');
                 }
                 else {

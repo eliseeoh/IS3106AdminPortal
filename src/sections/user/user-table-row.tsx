@@ -82,7 +82,7 @@ export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) 
             } else {
               console.error('Failed to delete admin:', response.statusText);
             }
-            
+
           })
           .catch((error) => {
             console.error('Error deleting admin:', error);
@@ -96,7 +96,7 @@ export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) 
     <>
       <TableRow hover tabIndex={-1} role="checkbox" selected={selected}>
         <TableCell padding="checkbox">
-          <Checkbox disableRipple checked={selected} onChange={onSelectRow} />
+          {/* <Checkbox disableRipple checked={selected} onChange={onSelectRow} /> */}
         </TableCell>
 
         <TableCell component="th" scope="row">
@@ -161,10 +161,6 @@ export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) 
             View
           </MenuItem>
 
-          <MenuItem onClick={handleClosePopover} sx={{ color: 'error.main' }}>
-            <Iconify icon="solar:trash-bin-trash-bold" />
-            Deleted
-          </MenuItem>
         </MenuList>
       </Popover>
     </>
