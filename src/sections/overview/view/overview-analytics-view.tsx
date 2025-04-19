@@ -87,33 +87,21 @@ export function OverviewAnalyticsView() {
 					/>
 				</Grid>
 
-				<Grid xs={12} md={6} lg={4}>
-					<AnalyticsCurrentVisits
-						title="Business Types"
+
+
+				<Grid xs={12} >
+					<AnalyticsWebsiteVisits
+						title="Subscription Statistics"
 						chart={{
+							categories: monthCategories,
 							series: [
-								{ label: 'America', value: 3500 },
-								{ label: 'Asia', value: 2500 },
-								{ label: 'Europe', value: 1500 },
-								{ label: 'Africa', value: 500 },
+								{ name: 'Basic', data: basicMonthly },
+								{ name: 'Standard', data: standardMonthly },
+								{ name: 'Premium', data: premiumMonthly },
 							],
 						}}
 					/>
 				</Grid>
-
-				<Grid xs={12} md={6} lg={8}>
-          <AnalyticsWebsiteVisits
-            title="Subscription Statistics"
-            chart={{
-              categories: monthCategories,
-              series: [
-                { name: 'Basic', data: basicMonthly },
-                { name: 'Standard', data: standardMonthly },
-				{ name: 'Premium', data: premiumMonthly },
-              ],
-            }}
-          />
-        </Grid>
 
 			</Grid>
 		</DashboardContent>
