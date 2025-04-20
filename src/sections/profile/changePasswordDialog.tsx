@@ -25,6 +25,8 @@ export default function ChangePasswordDialog({ open, handleClose }: ChangePasswo
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState("");
     const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">("success");
+    const [isSamePassword, setIsSamePassword] = useState(false);
+    const [isNotRepeatPassword, setIsNotRepeatPassword] = useState(false);
 
     const handleChangePassword = async () => {
         Api.changePassword(oldPassword, newPassword)
@@ -44,15 +46,22 @@ export default function ChangePasswordDialog({ open, handleClose }: ChangePasswo
                 }
             });
     }
-    
+
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+        setIsSamePassword(false);
+        setIsNotRepeatPassword(false);
         if (newPassword !== confirmPassword) {
+            setIsNotRepeatPassword(true);
             console.log("New password and confirm password do not match");
             return;
         }
         if (oldPassword === "" || newPassword === "" || confirmPassword === "") {
             console.log("Please fill in all fields");
+            return;
+        }
+        if (oldPassword === newPassword) {
+            setIsSamePassword(true);
             return;
         }
         handleChangePassword();
@@ -68,6 +77,7 @@ export default function ChangePasswordDialog({ open, handleClose }: ChangePasswo
                         <DialogContentText>
                             For first time users, please change the default password to your own password to activate your account.
                             <br /><br />To change your password, please enter your old password and the new password you want to set.
+                            <br />{isSamePassword && (<span style={{ color: "red" }}>New password must be different</span>)} {isNotRepeatPassword && (<span style={{ color: "red" }}>New password and confirm password do not match</span>)}
                         </DialogContentText>
                         <TextField
                             autoFocus

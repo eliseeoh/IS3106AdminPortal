@@ -36,6 +36,7 @@ export function AdminDetailView() {
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
     const [profileImage, setProfileImage] = useState<File | null>(null);
     const [isAdmin, setIsAdmin] = useState(false);
+    const [selfData, setSelfData] = useState({ role: "" });
 
     const fetchProfileData = useCallback(() => {
         Api.getProfileById(adminId)
@@ -50,14 +51,31 @@ export function AdminDetailView() {
             })
             .catch((error) => {
                 console.error(error.message);
-                alert(error.message);
             });
     }, [adminId]);
 
+    const fetchSelfProfileData = useCallback(() => {
+        Api.getProfile()
+            .then((res) => {
+                if (res.status === 404) {
+                    throw new Error("Unauthorized");
+                }
+                return res.json();
+            })
+            .then((json) => {
+                setSelfData(json);
+                console.log("Profile data fetched successfully:", json);
+            })
+            .catch((error) => {
+                console.error(error.message);
+            });
+    }, []);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(() => {
+        fetchSelfProfileData();
         fetchProfileData();
-    }, [fetchProfileData]);
+    }, [fetchProfileData, fetchSelfProfileData]);
 
     const insertUpdateData = (attributeName: string, value: any) => {
         setUpdateData((prev) => ({ ...prev, [attributeName]: value }));
@@ -147,7 +165,7 @@ export function AdminDetailView() {
                                             onChange={(e) => insertUpdateData("appointment", e.target.value)}
                                         />
                                     </div>) : (<div style={{ fontSize: 16, color: '#617A8A' }}>{data.appointment}</div>)}
-                                    {isEditPage ? (<div>
+                                    {isEditPage && selfData.role === "manager" ? (<div>
                                         <Typography variant='subtitle2'>Role</Typography>
                                         <Select
                                             labelId="demo-select-small-label"
@@ -236,17 +254,7 @@ export function AdminDetailView() {
                         <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid #E5E8EB', padding: 16 }}>
                             <div style={{ flex: 1, paddingRight: 16 }}>
                                 <div style={{ fontSize: 14, color: '#617A8A' }}>Email</div>
-                                {isEditPage ? (<div>
-                                    <TextField
-                                        fullWidth
-                                        name="email"
-                                        label=""
-                                        defaultValue={data.email}
-                                        InputLabelProps={{ shrink: true }}
-                                        sx={{ mb: 3, mt: 1 }}
-                                        onChange={(e) => insertUpdateData("email", e.target.value)}
-                                    />
-                                </div>) : (<div style={{ fontSize: 14 }}>{data.email}</div>)}
+                                <div style={{ fontSize: 14 }}>{data.email}</div>
                             </div>
                             {/* <div style={{ flex: 1 }}>
                                 <div style={{ fontSize: 14, color: '#617A8A' }}>Password</div>
@@ -265,7 +273,7 @@ export function AdminDetailView() {
                         </div>
                     </div>
                     <div style={{ width: '100%', padding: 16, display: 'flex', gap: 15 }}>
-                        {!isEditPage ? (
+                        {!isEditPage && selfData.role === "manager" && (
                             <>
                                 <Button onClick={() => setEditPage(true)} variant="contained" color="primary" style={{ padding: '12px 24px', borderRadius: 8, textTransform: 'none' }}>
                                     <div style={{ fontSize: 14, fontWeight: '700' }}>Edit Admin Details</div>
@@ -274,7 +282,8 @@ export function AdminDetailView() {
                                     <div style={{ fontSize: 14, fontWeight: '700' }}>Disable Account</div>
                                 </Button>} */}
                             </>
-                        ) : (
+                        )}
+                        {(isEditPage && selfData.role === "manager") && (
                             <>
                                 <Button onClick={() => { setEditPage(false); handleSaveDetail() }} variant="contained" color="primary" style={{ padding: '12px 24px', borderRadius: 8, textTransform: 'none' }}>
                                     <div style={{ fontSize: 14, fontWeight: '700' }}>Save Details</div>

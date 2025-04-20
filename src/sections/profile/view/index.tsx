@@ -151,7 +151,7 @@ export function ProfileView() {
                                 </div>
                                 <div style={{ display: 'flex', flexDirection: 'column' }}>
                                     <div style={{ fontSize: 22, fontWeight: '700' }}>{data.name}</div>
-                                    {isEditPage ? (<div>
+                                    {isEditPage && data.role === "manager" ? (<div>
                                         <Typography variant='subtitle2'>Appointment</Typography>
                                         <TextField
                                             fullWidth
@@ -163,8 +163,19 @@ export function ProfileView() {
                                             sx={{ mb: 3, mt: 1 }}
                                         />
                                     </div>) : (<div style={{ fontSize: 16, color: '#617A8A' }}>{data.appointment}</div>)}
-                                    <div style={{ fontSize: 16, color: '#617A8A' }}>{data.role.charAt(0).toUpperCase() + data.role.slice(1)}</div>
-
+                                    {isEditPage && data.role === "manager" ? (<div>
+                                        <Typography variant='subtitle2'>Role</Typography>
+                                        <Select
+                                            labelId="demo-select-small-label"
+                                            id="demo-select-small"
+                                            value={isAdmin ? "admin" : "manager"}
+                                            label="role"
+                                            onChange={handleRoleChange}
+                                        >
+                                            <MenuItem value="admin">Admin</MenuItem>
+                                            <MenuItem value="manager">Manager</MenuItem>
+                                        </Select>
+                                    </div>) : (<div style={{ fontSize: 16, color: '#617A8A' }}>{data.role.charAt(0).toUpperCase() + data.role.slice(1)}</div>)}
                                 </div>
                             </div>
                         </div>

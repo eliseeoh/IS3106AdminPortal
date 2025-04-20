@@ -36,7 +36,7 @@ export function SignInView() {
     Api.signIn(email, password)
       .then((res) => {
         if (!res.ok) {
-          setSnackbarMessage("Invalid credentials");
+          setSnackbarMessage("Invalid credentials or disabled account");
           setSnackbarSeverity("error");
           setOpenSnackbar(true);
           throw new Error("Unauthorized: Invalid email or password");
